@@ -5,11 +5,12 @@
 #include "EnhancedInputComponent.h"
 #include "Interaction/EnemyInterface.h"
 
-void AAuraPlayerController::AAuraPlayerControler() {
+AAuraPlayerController::AAuraPlayerController()
+	: LastActor(nullptr), ThisActor(nullptr) {
 	bReplicates = true;
 }
 
-void AAuraPlayerController::PlayerTick(float DeltaTime) {
+void AAuraPlayerController::PlayerTick(const float DeltaTime) {
 	Super::PlayerTick(DeltaTime);
 	CursorTrace();
 }
@@ -58,8 +59,9 @@ void AAuraPlayerController::BeginPlay() {
 	check(AuraContext);
 
 	UEnhancedInputLocalPlayerSubsystem *Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	check(Subsystem);
-	Subsystem->AddMappingContext(AuraContext, 0);
+	if (Subsystem) {
+		Subsystem->AddMappingContext(AuraContext, 0);
+	}
 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;

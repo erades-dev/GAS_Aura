@@ -19,7 +19,7 @@ class AURA_API AAuraPlayerController : public APlayerController {
 	GENERATED_BODY()
 
 public:
-	void AAuraPlayerControler();
+	AAuraPlayerController();
 	virtual void PlayerTick(float DeltaTime) override;
 
 protected:
@@ -35,6 +35,6 @@ private:
 
 	void Move(const FInputActionValue &InputActionValue);
 	void CursorTrace();
-	IEnemyInterface *LastActor;
-	IEnemyInterface *ThisActor;
+	TObjectPtr<IEnemyInterface> LastActor;
+	TObjectPtr<IEnemyInterface> ThisActor;
 };
