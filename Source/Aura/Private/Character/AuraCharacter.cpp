@@ -31,15 +31,15 @@ void AAuraCharacter::OnRep_PlayerState() {
 }
 
 void AAuraCharacter::InitAbilityActorInfo() {
-	AAuraPlayerState *AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	auto *AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
 	AbilitySystemComponent->InitAbilityActorInfo(AuraPlayerState, this);
 	AttributeSet = AuraPlayerState->GetAttibuteSet();
 
-	AAuraPlayerController *AuraPlayerController = Cast<AAuraPlayerController>(GetController());
+	auto *AuraPlayerController = Cast<AAuraPlayerController>(GetController());
 	if (AuraPlayerController) {
-		AAuraHUD *AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD());
+		auto *AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD());
 		if (AuraHUD) {
 			AuraHUD->InitOverlay(AuraPlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet);
 		}
