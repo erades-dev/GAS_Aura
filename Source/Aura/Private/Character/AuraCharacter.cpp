@@ -4,10 +4,12 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/AuraPlayerState.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Player/AuraPlayerController.h"
 #include "UI/HUD/AuraHUD.h"
 
-AAuraCharacter::AAuraCharacter() {
+AAuraCharacter::AAuraCharacter()
+{
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	// GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
@@ -18,29 +20,35 @@ AAuraCharacter::AAuraCharacter() {
 	bUseControllerRotationYaw = false;
 }
 
-void AAuraCharacter::PossessedBy(AController *NewController) {
+void AAuraCharacter::PossessedBy(AController* NewController)
+{
 	Super::PossessedBy(NewController);
 	// Init ability actor info for the server.
 	InitAbilityActorInfo();
 }
 
-void AAuraCharacter::OnRep_PlayerState() {
+void AAuraCharacter::OnRep_PlayerState()
+{
 	Super::OnRep_PlayerState();
 	// Init ability actor info for the client.
 	InitAbilityActorInfo();
 }
 
-void AAuraCharacter::InitAbilityActorInfo() {
-	auto *AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+void AAuraCharacter::InitAbilityActorInfo()
+{
+	auto* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
 	AbilitySystemComponent->InitAbilityActorInfo(AuraPlayerState, this);
+	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 	AttributeSet = AuraPlayerState->GetAttibuteSet();
 
-	auto *AuraPlayerController = Cast<AAuraPlayerController>(GetController());
-	if (AuraPlayerController) {
-		auto *AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD());
-		if (AuraHUD) {
+	auto* AuraPlayerController = Cast<AAuraPlayerController>(GetController());
+	if (AuraPlayerController)
+	{
+		auto* AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD());
+		if (AuraHUD)
+		{
 			AuraHUD->InitOverlay(AuraPlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet);
 		}
 	}

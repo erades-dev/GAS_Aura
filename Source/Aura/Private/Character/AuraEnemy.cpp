@@ -5,7 +5,8 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "abilitySystem/AuraAttributeSet.h"
 
-AAuraEnemy::AAuraEnemy() {
+AAuraEnemy::AAuraEnemy()
+{
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 	GetMesh()->CustomDepthStencilValue = CUSTOM_DEPTH_RED;
 	Weapon->CustomDepthStencilValue = CUSTOM_DEPTH_RED;
@@ -17,18 +18,27 @@ AAuraEnemy::AAuraEnemy() {
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
 }
 
-void AAuraEnemy::HighlightActor() {
+void AAuraEnemy::HighlightActor()
+{
 	GetMesh()->SetRenderCustomDepth(true);
 	Weapon->SetRenderCustomDepth(true);
 }
 
-void AAuraEnemy::UnHighlightActor() {
+void AAuraEnemy::UnHighlightActor()
+{
 	GetMesh()->SetRenderCustomDepth(false);
 	Weapon->SetRenderCustomDepth(false);
 }
 
-void AAuraEnemy::BeginPlay() {
+void AAuraEnemy::BeginPlay()
+{
 	Super::BeginPlay();
 	check(AbilitySystemComponent);
+	InitAbilityActorInfo();
+}
+
+void AAuraEnemy::InitAbilityActorInfo()
+{
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 }
