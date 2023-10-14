@@ -12,7 +12,7 @@ public class Aura : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "GameplayTags", "GameplayTasks" });
 
-		PublicIncludePaths.AddRange(new string[] { "Project/Aura/Public" }
+        PublicIncludePaths.AddRange(new string[] { "Aura/Public" }
 );
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

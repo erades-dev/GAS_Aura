@@ -15,7 +15,8 @@ class IEnemyInterface;
  *
  */
 UCLASS()
-class AURA_API AAuraPlayerController : public APlayerController {
+class AURA_API AAuraPlayerController : public APlayerController
+{
 	GENERATED_BODY()
 
 public:
@@ -33,8 +34,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "GAS|Input")
 	TObjectPtr<UInputAction> MoveAction;
 
-	void Move(const FInputActionValue &InputActionValue);
+	void Move(const FInputActionValue& InputActionValue);
 	void CursorTrace();
-	TObjectPtr<IEnemyInterface> LastActor;
-	TObjectPtr<IEnemyInterface> ThisActor;
+	IEnemyInterface* LastActor;
+	IEnemyInterface* ThisActor;
 };
