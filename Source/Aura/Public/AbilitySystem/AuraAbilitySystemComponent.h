@@ -10,9 +10,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContaine
 	/**
 	 *
 	 */
-	UCLASS()
-class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
-{
+	UCLASS() class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent {
 	GENERATED_BODY()
 
 public:

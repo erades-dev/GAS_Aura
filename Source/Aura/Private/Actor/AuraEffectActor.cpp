@@ -13,9 +13,9 @@ void AAuraEffectActor::BeginPlay() {
 	Super::BeginPlay();
 }
 
-void AAuraEffectActor::ApplyEffectToTarget(AActor *TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass) {
+void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass) {
 	checkf(GameplayEffectClass, TEXT("GameplayEffectClass argument missing. Please fill out BP_AuraEffectorActor"));
-	UAbilitySystemComponent *TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	if (!TargetASC)
 		return;
 	FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
@@ -30,7 +30,7 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor *TargetActor, TSubclassOf<UGam
 	}
 }
 
-void AAuraEffectActor::OnOverlap(AActor *TargetActor) {
+void AAuraEffectActor::OnOverlap(AActor* TargetActor) {
 	if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap) {
 		ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
 	}
@@ -42,7 +42,7 @@ void AAuraEffectActor::OnOverlap(AActor *TargetActor) {
 	}
 }
 
-void AAuraEffectActor::OnEndOverlap(AActor *TargetActor) {
+void AAuraEffectActor::OnEndOverlap(AActor* TargetActor) {
 	if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap) {
 		ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
 	}
@@ -53,7 +53,7 @@ void AAuraEffectActor::OnEndOverlap(AActor *TargetActor) {
 		ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
 	}
 	if (InfiniteEffectRemovePolicy == EEffectRemovePolicy::RemoveOnEndOverlap) {
-		UAbilitySystemComponent *TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 		if (TargetASC) {
 			TArray<FActiveGameplayEffectHandle> HandlesToRemove;
 			for (auto HandlePair : ActiveEffectHandles) {
@@ -62,7 +62,7 @@ void AAuraEffectActor::OnEndOverlap(AActor *TargetActor) {
 					HandlesToRemove.Add(HandlePair.Key);
 				}
 			}
-			for (auto &Handle : HandlesToRemove) {
+			for (auto& Handle : HandlesToRemove) {
 				ActiveEffectHandles.FindAndRemoveChecked(Handle);
 			}
 		}

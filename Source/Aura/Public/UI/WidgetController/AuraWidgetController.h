@@ -44,16 +44,16 @@ public:
 	virtual void BindCallbacksToDependencies();
 
 protected:
-	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
+	UPROPERTY(BlueprintReadOnly, Category = "GAS|WidgetController")
 	TObjectPtr<APlayerController> PlayerController;
 
-	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
+	UPROPERTY(BlueprintReadOnly, Category = "GAS|WidgetController")
 	TObjectPtr<APlayerState> PlayerState;
 
-	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
+	UPROPERTY(BlueprintReadOnly, Category = "GAS|WidgetController")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
-	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
+	UPROPERTY(BlueprintReadOnly, Category = "GAS|WidgetController")
 	TObjectPtr<UAttributeSet> AttributeSet;
 
 private:

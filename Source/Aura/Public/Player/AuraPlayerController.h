@@ -27,10 +27,10 @@ protected:
 	virtual void SetupInputComponent() override;
 
 private:
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "GAS|Input")
 	TObjectPtr<UInputMappingContext> AuraContext;
 
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "GAS|Input")
 	TObjectPtr<UInputAction> MoveAction;
 
 	void Move(const FInputActionValue &InputActionValue);
