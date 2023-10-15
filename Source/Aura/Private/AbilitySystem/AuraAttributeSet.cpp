@@ -4,10 +4,30 @@
 #include "GameplayEffectExtension.h"
 #include <Net/UnrealNetwork.h>
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AuraGameplayTags.h"
 #include "GameFramework/Character.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
+	const auto GamePlayTags = FAuraGameplayTags::Get();
+
+	TagsToAttributes.Add(GamePlayTags.Attributes_Primary_Strength, GetStrengthAttribute);
+	TagsToAttributes.Add(GamePlayTags.Attributes_Primary_Intelligence, GetIntelligenceAttribute);
+	TagsToAttributes.Add(GamePlayTags.Attributes_Primary_Resilience, GetResilienceAttribute);
+	TagsToAttributes.Add(GamePlayTags.Attributes_Primary_Vigor, GetVigorAttribute);
+
+	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_Armor, GetArmorAttribute);
+	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_ArmorPenetration, GetIntelligenceAttribute);
+	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_BlockChance, GetBlockChanceAttribute);
+
+	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_CriticalHitChance, GetCriticalHitChanceAttribute);
+	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_CriticalHitDamage, GetCriticalHitDamageAttribute);
+	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_CriticalHitResistance, GetCriticalHitResistanceAttribute);
+
+	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_HealthRegeneration, GetHealthRegenerationAttribute);
+	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_ManaRegeneration, GetManaRegenerationAttribute);
+	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_MaxHealth, GetMaxHealthAttribute);
+	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_MaxMana, GetMaxManaAttribute);
 }
 
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const

@@ -9,11 +9,12 @@ class UAbilitySystemComponent;
 class UAttributeSet;
 
 USTRUCT(BlueprintType)
-struct FWidgetControllerParams {
+struct FWidgetControllerParams
+{
 	GENERATED_BODY()
 
 	FWidgetControllerParams() {}
-	FWidgetControllerParams(APlayerController *PC, APlayerState *PS, UAbilitySystemComponent *ASC, UAttributeSet *AS)
+	FWidgetControllerParams(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
 		: PlayerController(PC), PlayerState(PS), AbilitySystemComponent(ASC), AttributeSet(AS) {}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -32,13 +33,15 @@ struct FWidgetControllerParams {
  *
  */
 UCLASS()
-class AURA_API UAuraWidgetController : public UObject {
+class AURA_API UAuraWidgetController : public UObject
+{
 	GENERATED_BODY()
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetWidgetControllerParams(const FWidgetControllerParams &Params);
+	void SetWidgetControllerParams(const FWidgetControllerParams& Params);
 
+	UFUNCTION(BlueprintCallable)
 	virtual void BroadCastInitialValues();
 
 	virtual void BindCallbacksToDependencies();
