@@ -19,18 +19,18 @@ AllowShortFunctionsOnASingleLine:               All
 
 BreakBeforeBraces:                              Custom 
 BraceWrapping:
-    AfterCaseLabel:                             true
-    AfterClass:                                 true
-    AfterControlStatement:                      true
-    AfterEnum:                                  true
-    AfterFunction:                              true
-    AfterNamespace:                             true
-    AfterStruct:                                true
-    BeforeCatch:                                true
-    BeforeElse:                                 true
-    SplitEmptyFunction:                         true
-    SplitEmptyRecord:                           true
-    SplitEmptyNamespace:                        true
+    AfterCaseLabel:                             false
+    AfterClass:                                 false
+    AfterControlStatement:                      false
+    AfterEnum:                                  false
+    AfterFunction:                              false
+    AfterNamespace:                             false
+    AfterStruct:                                false
+    BeforeCatch:                                false
+    BeforeElse:                                 false
+    SplitEmptyFunction:                         false
+    SplitEmptyRecord:                           false
+    SplitEmptyNamespace:                        false
 
 ColumnLimit:                                    0
 PointerAlignment:                               Left

@@ -35,13 +35,13 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable)
-	void ApplyEffectToTarget(AActor *TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);
+	void ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);
 
 	UFUNCTION(BlueprintCallable)
-	void OnOverlap(AActor *TargetActor);
+	void OnOverlap(AActor* TargetActor);
 
 	UFUNCTION(BlueprintCallable)
-	void OnEndOverlap(AActor *TargetActor);
+	void OnEndOverlap(AActor* TargetActor);
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Applied Effects")
 	bool bDestroyOnEffectRemoval = false;
@@ -67,7 +67,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Applied Effects")
 	TSubclassOf<UGameplayEffect> InfiniteGameplayEffectClass;
 
-	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent *> ActiveEffectHandles;
+	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveEffectHandles;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS|Applied Effects")
 	float ActorLevel = 1.f;

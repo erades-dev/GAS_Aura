@@ -39,6 +39,13 @@ public:
 	FGameplayTag Message_ManaCrystal;
 	FGameplayTag Message_ManaPotion;
 
+	FGameplayTag Input_Primary;
+	FGameplayTag Input_Secondary;
+	FGameplayTag Input_1;
+	FGameplayTag Input_2;
+	FGameplayTag Input_3;
+	FGameplayTag Input_4;
+
 protected:
 private:
 	static FAuraGameplayTags GameplayTags;

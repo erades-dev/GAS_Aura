@@ -71,4 +71,24 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 
 	GameplayTags.Message_ManaPotion = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Message.ManaPotion"), FString("Reduce damage taken, improves block chance"));
+
+	// Input
+
+	GameplayTags.Input_Primary = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Input.Primary"), FString(""));
+
+	GameplayTags.Input_Secondary = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Input.Secondary"), FString(""));
+
+	GameplayTags.Input_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Input.1"), FString(""));
+
+	GameplayTags.Input_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Input.2"), FString(""));
+
+	GameplayTags.Input_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Input.3"), FString(""));
+
+	GameplayTags.Input_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Input.4"), FString(""));
 }
