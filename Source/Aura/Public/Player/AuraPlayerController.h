@@ -19,8 +19,7 @@ class UAuraAbilitySystemComponent;
  *
  */
 UCLASS()
-class AURA_API AAuraPlayerController : public APlayerController
-{
+class AURA_API AAuraPlayerController : public APlayerController {
 	GENERATED_BODY()
 
 public:
@@ -44,6 +43,13 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "GAS|Input")
 	TObjectPtr<UInputAction> MoveAction;
+
+	UPROPERTY(EditAnywhere, Category = "GAS|Input")
+	TObjectPtr<UInputAction> HoldPosition;
+
+	bool bHoldPositionDown = false;
+	void HoldPositionPressed() { bHoldPositionDown = true; };
+	void HoldPositionReleased() { bHoldPositionDown = false; };
 
 	FVector CachedDestination = FVector::ZeroVector;
 	float FollowTime = 1.f;

@@ -47,6 +47,8 @@ void AAuraPlayerController::SetupInputComponent() {
 
 	UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
 	AuraInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+	AuraInputComponent->BindAction(HoldPosition, ETriggerEvent::Started, this, &AAuraPlayerController::HoldPositionPressed);
+	AuraInputComponent->BindAction(HoldPosition, ETriggerEvent::Completed, this, &AAuraPlayerController::HoldPositionReleased);
 	AuraInputComponent->BindAbilityActions(InputConfig, this,
 		&ThisClass::AbilityInputTagPressed,
 		&ThisClass::AbilityInputTagReleased,
@@ -90,25 +92,26 @@ void AAuraPlayerController::CursorTrace() {
 	}
 }
 
-void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag) {
+void AAuraPlayerController::AbilityInputTagPressed(const FGameplayTag InputTag) {
 	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().Input_Primary)) {
 		bTargeting = ThisActor ? true : false;
 		bAutoRunning = false;
 	}
 }
 
-void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag) {
+void AAuraPlayerController::AbilityInputTagReleased(const FGameplayTag InputTag) {
 	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().Input_Primary)) {
 		if (GetASC()) {
 			GetASC()->AbilityInputTagReleased(InputTag);
 		}
 		return;
 	}
-	if (bTargeting) {
-		if (GetASC()) {
-			GetASC()->AbilityInputTagReleased(InputTag);
-		}
-	} else {
+
+	if (GetASC()) {
+		GetASC()->AbilityInputTagReleased(InputTag);
+	}
+
+	if (!bTargeting && !bHoldPositionDown) {
 		const APawn* ControlledPawn = GetPawn();
 		if (FollowTime < ShortPressThreshold && ControlledPawn) {
 			UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this,
@@ -118,7 +121,8 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag) {
 				for (const FVector& PointLoc : NavPath->PathPoints) {
 					Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
 				}
-				if (const int LastIndex = NavPath->PathPoints.Num() - 1) {
+				const int LastIndex = NavPath->PathPoints.Num() - 1;
+				if (LastIndex > 0) {
 					CachedDestination = NavPath->PathPoints[LastIndex];
 				}
 				bAutoRunning = true;
@@ -129,7 +133,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag) {
 	}
 }
 
-void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag) {
+void AAuraPlayerController::AbilityInputTagHeld(const FGameplayTag InputTag) {
 	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().Input_Primary)) {
 		if (GetASC()) {
 			GetASC()->AbilityInputTagHeld(InputTag);
@@ -137,7 +141,7 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag) {
 		return;
 	}
 
-	if (bTargeting) {
+	if (bTargeting || bHoldPositionDown) {
 		if (GetASC()) {
 			GetASC()->AbilityInputTagHeld(InputTag);
 		}

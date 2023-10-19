@@ -16,7 +16,7 @@ class AURA_API UAuraProjectileSpell : public UAuraGameplayAbility {
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "GAS|Projectile")
-	bool SpawnProjectile();
+	bool SpawnProjectile(const FVector& ProjectileTargetLocation);
 
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -24,4 +24,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AAuraProjectile> ProjectileClass;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> DamageEffectClass;
 };

@@ -14,8 +14,7 @@
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
 USTRUCT()
-struct FEffectProperties
-{
+struct FEffectProperties {
 	GENERATED_BODY()
 
 	FGameplayEffectContextHandle EffectContextHandle;
@@ -42,8 +41,7 @@ struct FEffectProperties
  *
  */
 UCLASS()
-class AURA_API UAuraAttributeSet : public UAttributeSet
-{
+class AURA_API UAuraAttributeSet : public UAttributeSet {
 	GENERATED_BODY()
 
 public:
