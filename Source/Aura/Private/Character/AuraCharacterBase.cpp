@@ -7,11 +7,12 @@
 #include "Components/CapsuleComponent.h"
 
 // Sets default values
-AAuraCharacterBase::AAuraCharacterBase() {
+AAuraCharacterBase::AAuraCharacterBase()
+{
 	PrimaryActorTick.bCanEverTick = false;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-	//TODO
+	// TODO: swap all collisions to the capsule.
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_PROJECTILE, ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);
@@ -21,22 +22,54 @@ AAuraCharacterBase::AAuraCharacterBase() {
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const {
+UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
+{
 	return (AbilitySystemComponent);
 }
 
-void AAuraCharacterBase::BeginPlay() {
+UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
+{
+	return (HitReactMontage);
+}
+
+void AAuraCharacterBase::Die()
+{
+
+	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+	MulticastHandleDeath();
+}
+
+void AAuraCharacterBase::MulticastHandleDeath_Implementation()
+{
+	Weapon->SetSimulatePhysics(true);
+	Weapon->SetEnableGravity(true);
+	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetEnableGravity(true);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Dissolve();
+}
+
+void AAuraCharacterBase::BeginPlay()
+{
 	Super::BeginPlay();
 }
 
-FVector AAuraCharacterBase::GetCombatSocketLocation() {
+FVector AAuraCharacterBase::GetCombatSocketLocation()
+{
 	return (Weapon->GetSocketLocation(WeaponTipSocketName));
 }
 
-void AAuraCharacterBase::InitAbilityActorInfo() {
+void AAuraCharacterBase::InitAbilityActorInfo()
+{
 }
 
-void AAuraCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const {
+void AAuraCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const
+{
 	check(IsValid(AbilitySystemComponent));
 	check(GameplayEffectClass);
 	FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
@@ -45,15 +78,36 @@ void AAuraCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> Ga
 	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), AbilitySystemComponent);
 }
 
-void AAuraCharacterBase::InitializeDefaultAttributes() const {
+void AAuraCharacterBase::InitializeDefaultAttributes() const
+{
 	ApplyEffectToSelf(DefaultPrimaryAttributes, 1);
 	ApplyEffectToSelf(DefaultSecondaryAttributes, 1);
 	ApplyEffectToSelf(TransientAttributes, 1);
 }
 
-void AAuraCharacterBase::AddCharacterAbilities() {
+void AAuraCharacterBase::AddCharacterAbilities()
+{
 	if (!HasAuthority())
 		return;
 	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 	AuraASC->AddCharacterAbilities(StartupAbilities);
+}
+
+void AAuraCharacterBase::Dissolve()
+{
+	TArray<UMaterialInstanceDynamic*> DynamicMaterials;
+	if (IsValid(DissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* DynamicMatInst = UMaterialInstanceDynamic::Create(DissolveMaterialInstance, this);
+		GetMesh()->SetMaterial(0, DynamicMatInst);
+		DynamicMaterials.Add(DynamicMatInst);
+	}
+
+	if (IsValid(DissolveMaterialInstanceWeapon))
+	{
+		UMaterialInstanceDynamic* DynamicMatInstWeapon = UMaterialInstanceDynamic::Create(DissolveMaterialInstanceWeapon, Weapon);
+		Weapon->SetMaterial(0, DynamicMatInstWeapon);
+		DynamicMaterials.Add(DynamicMatInstWeapon);
+	}
+	StartDissolveTimeline(DynamicMaterials);
 }

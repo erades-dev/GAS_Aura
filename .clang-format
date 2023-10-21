@@ -1,3 +1,5 @@
+StatementMacros: ['UPROPERTY', 'UFUNCTION', 'UCLASS', 'USTRUCT', 'UENUM', 'UINTERFACE', 'GENERATED_BODY']
+
 BasedOnStyle:                                   Microsoft
 Language:                                       Cpp
 SortIncludes:                                   false
@@ -14,23 +16,23 @@ AlignConsecutiveAssignments:		           	false
 AlignConsecutiveDeclarations:			        false
 
 AllowShortCaseLabelsOnASingleLine:              false
-AllowShortFunctionsOnASingleLine:               All
+AllowShortFunctionsOnASingleLine:               None
 
 
 BreakBeforeBraces:                              Custom 
 BraceWrapping:
-    AfterCaseLabel:                             false
-    AfterClass:                                 false
-    AfterControlStatement:                      false
-    AfterEnum:                                  false
-    AfterFunction:                              false
-    AfterNamespace:                             false
-    AfterStruct:                                false
-    BeforeCatch:                                false
-    BeforeElse:                                 false
-    SplitEmptyFunction:                         false
-    SplitEmptyRecord:                           false
-    SplitEmptyNamespace:                        false
+    AfterCaseLabel:                             true
+    AfterClass:                                 true
+    AfterControlStatement:                      true
+    AfterEnum:                                  true
+    AfterFunction:                              true
+    AfterNamespace:                             true
+    AfterStruct:                                true
+    BeforeCatch:                                true
+    BeforeElse:                                 true
+    SplitEmptyFunction:                         true
+    SplitEmptyRecord:                           true
+    SplitEmptyNamespace:                        true
 
 ColumnLimit:                                    0
 PointerAlignment:                               Left

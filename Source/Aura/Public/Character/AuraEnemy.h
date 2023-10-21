@@ -27,6 +27,7 @@ public:
 
 	// begin Combat Interface.
 	virtual int32 GetPlayerLevel() override;
+	virtual void Die() override;
 	// end Enemy Interface.
 
 	UPROPERTY(BlueprintAssignable)
@@ -35,6 +36,16 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnMaxHealthChanged;
 
+	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
+	UPROPERTY(BlueprintReadOnly, Category = "GAS|Combat")
+	bool bHitReaction;
+
+	UPROPERTY(BlueprintReadOnly, Category = "GAS|Combat")
+	float BaseWalkSpeed = 250.0f;
+
+	UPROPERTY(BlueprintReadOnly, Category = "GAS|Combat")
+	float LifeSpan = 5.0f;
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
@@ -50,5 +61,5 @@ protected:
 	TObjectPtr<UWidgetComponent> HealthBar;
 
 private:
-	void InitializeWidgetBar();
+	void InitializeBindings();
 };

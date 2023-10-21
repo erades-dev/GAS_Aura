@@ -4,11 +4,13 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 #include "Actor/AuraProjectile.h"
 #include "Interaction/CombatInterface.h"
 
 void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) {
+	const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+{
 
 	// UKismetSystemLibrary::PrintString(this, FString("Ability activated from c++!"), true, true, FColor::Yellow, 3.0f);
 
@@ -16,27 +18,42 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	// if (SpawnProjectile(ActivationInfo)) return;
 }
 
-bool UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation) {
+bool UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation)
+{
 	const bool bHasAuthority = GetAvatarActorFromActorInfo()->HasAuthority();
-	if (!bHasAuthority) {
-		return true;
+	if (!bHasAuthority)
+	{
+		return (true);
 	}
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
-	if (CombatInterface) {
-		const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
-		FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
-		Rotation.Pitch = 0.f;
+	if (CombatInterface)
+	{
 		FTransform SpawnTransform;
-		SpawnTransform.SetLocation(SocketLocation);
+		const FVector Location = CombatInterface->GetCombatSocketLocation();
+		FRotator Rotation = (ProjectileTargetLocation - Location).Rotation();
+		Rotation.Pitch = 0.f;
+		SpawnTransform.SetLocation(Location);
 		SpawnTransform.SetRotation(Rotation.Quaternion());
+
 		AAuraProjectile* ProjectileDeferred = GetWorld()->SpawnActorDeferred<AAuraProjectile>(ProjectileClass, SpawnTransform,
 			GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
-		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
-		ProjectileDeferred->DamageEffectSpecHandle = SpecHandle;
 
+		FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
+		EffectContextHandle.SetAbility(this);
+		EffectContextHandle.AddSourceObject(ProjectileDeferred);
+
+		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
+
+		for (auto& Pair : DamageTypes)
+		{
+			const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
+			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
+		}
+
+		ProjectileDeferred->DamageEffectSpecHandle = SpecHandle;
 		ProjectileDeferred->FinishSpawning(SpawnTransform);
 	}
-	return false;
+	return (false);
 }

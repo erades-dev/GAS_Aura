@@ -14,7 +14,8 @@
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
 USTRUCT()
-struct FEffectProperties {
+struct FEffectProperties
+{
 	GENERATED_BODY()
 
 	FGameplayEffectContextHandle EffectContextHandle;
@@ -41,7 +42,8 @@ struct FEffectProperties {
  *
  */
 UCLASS()
-class AURA_API UAuraAttributeSet : public UAttributeSet {
+class AURA_API UAuraAttributeSet : public UAttributeSet
+{
 	GENERATED_BODY()
 
 public:
@@ -66,6 +68,11 @@ public:
 	// ManaRegeneration
 	// MaxHealth
 	// MaxMana
+
+	// Fire;
+	// Lightning;
+	// Arcane;
+	// Physical;
 
 	// Health
 	// Mana
@@ -134,35 +141,44 @@ public:
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana);
 
 	/*
-	 * Temporal Attributes
+	 * Resistance Attributes
 	 */
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "GAS|Vital Attributes")
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Fire, Category = "GAS|Vital Attributes")
+	FGameplayAttributeData Fire;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Fire);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Lightning, Category = "GAS|Vital Attributes")
+	FGameplayAttributeData Lightning;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Lightning);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Arcane, Category = "GAS|Vital Attributes")
+	FGameplayAttributeData Arcane;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Arcane);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Physical, Category = "GAS|Vital Attributes")
+	FGameplayAttributeData Physical;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Physical);
+
+	/*
+	 * Transient Attributes
+	 */
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "GAS|Transient Attributes")
 	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health);
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Mana, Category = "GAS|Vital Attributes")
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Mana, Category = "GAS|Transient Attributes")
 	FGameplayAttributeData Mana;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana);
 
-	// Strength
-	// Intelligence
-	// Resilience
-	// Vigor
+	/*
+	 * Meta Attributes.
+	 */
 
-	// Armor
-	// ArmorPenetration
-	// BlockChance
-	// CriticalHitChance
-	// CriticalHitDamage
-	// CriticalHitResistance
-	// HealthRegeneration
-	// ManaRegeneration
-	// MaxHealth
-	// MaxMana
-
-	// Health
-	// Mana
+	UPROPERTY(BlueprintReadOnly, Category = "GAS|Meta Attributes");
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
 
 	// Primary
 	UFUNCTION()
@@ -178,7 +194,6 @@ public:
 	void OnRep_Vigor(const FGameplayAttributeData& OldVigor) const;
 
 	// Secondary
-
 	UFUNCTION()
 	void OnRep_Armor(const FGameplayAttributeData& OldArmor) const;
 
@@ -209,8 +224,20 @@ public:
 	UFUNCTION()
 	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
 
-	// Temporal
+	// Resistances.
+	UFUNCTION()
+	void OnRep_Fire(const FGameplayAttributeData& OldFire) const;
 
+	UFUNCTION()
+	void OnRep_Lightning(const FGameplayAttributeData& OldLightning) const;
+
+	UFUNCTION()
+	void OnRep_Arcane(const FGameplayAttributeData& OldArcane) const;
+
+	UFUNCTION()
+	void OnRep_Physical(const FGameplayAttributeData& OldPhysical) const;
+
+	// Transient
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
 
@@ -219,4 +246,5 @@ public:
 
 private:
 	static void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props);
+	static void ShowFloatingText(const FEffectProperties& Props, const float Damage, const bool bBlockedHit, const bool bCriticalHit);
 };

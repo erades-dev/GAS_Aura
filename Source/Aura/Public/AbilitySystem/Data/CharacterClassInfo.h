@@ -6,17 +6,20 @@
 #include "Engine/DataAsset.h"
 #include "CharacterClassInfo.generated.h"
 
+class UGameplayAbility;
 class UGameplayEffect;
 
 UENUM(BlueprintType)
-enum class ECharacterClass : uint8 {
+enum class ECharacterClass : uint8
+{
 	Elementalist,
 	Warrior,
 	Ranger
 };
 
 USTRUCT()
-struct FCharacterClassDefaultInfo {
+struct FCharacterClassDefaultInfo
+{
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly, Category = "GAS|Class Defaults")
@@ -27,7 +30,8 @@ struct FCharacterClassDefaultInfo {
  *
  */
 UCLASS()
-class AURA_API UCharacterClassInfo : public UDataAsset {
+class AURA_API UCharacterClassInfo : public UDataAsset
+{
 	GENERATED_BODY()
 
 public:
@@ -39,6 +43,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "GAS|Class Defaults Common")
 	TSubclassOf<UGameplayEffect> TransientAttributes;
+
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Class Defaults Common")
+	TArray<TSubclassOf<UGameplayAbility>> CommonAbilities;
+
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Class Defaults Common")
+	TObjectPtr<UCurveTable> DamageCalculationsCoefficients;
 
 	FCharacterClassDefaultInfo GetClassDefaultInfo(ECharacterClass CharacterClass);
 };
