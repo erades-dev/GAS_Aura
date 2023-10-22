@@ -44,7 +44,10 @@ protected:
 	void OnEndOverlap(AActor* TargetActor);
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Applied Effects")
-	bool bDestroyOnEffectRemoval = false;
+	bool bDestroyOnEffectApplication = false;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Applied Effects")
+	bool bApplyEffectToEnemy = false;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Applied Effects")
 	EEffectApplicationPolicy InstantEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;

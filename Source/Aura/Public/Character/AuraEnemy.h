@@ -10,6 +10,8 @@
 #include "Character/AuraCharacterBase.h"
 #include "AuraEnemy.generated.h"
 
+class UBehaviorTree;
+class AAuraAIController;
 class UWidgetComponent;
 /**
  *
@@ -25,12 +27,13 @@ public:
 	// Begin Enemy Interface.
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
-	// End Enemy Interface.
 
 	// Begin Combat Interface.
 	virtual int32 GetPlayerLevel() override;
 	virtual void Die() override;
-	// End Combat Interface.
+
+	// Begin ACharacter Override.
+	virtual void PossessedBy(AController* NewController) override;
 
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
@@ -54,7 +57,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeDefaultAttributes() const override;
-	// End AAuraCharacterBase override.
+
+	void InitializeBindings();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS|Character Class Defaults")
 	ECharacterClass CharacterClass = ECharacterClass::Warrior;
@@ -65,6 +69,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> HealthBar;
 
-private:
-	void InitializeBindings();
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	UPROPERTY()
+	TObjectPtr<AAuraAIController> AuraAIController;
 };

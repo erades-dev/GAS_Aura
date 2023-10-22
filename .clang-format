@@ -16,7 +16,7 @@ AlignConsecutiveAssignments:		           	false
 AlignConsecutiveDeclarations:			        false
 
 AllowShortCaseLabelsOnASingleLine:              false
-AllowShortFunctionsOnASingleLine:               None
+AllowShortFunctionsOnASingleLine:               true
 
 
 BreakBeforeBraces:                              Custom 

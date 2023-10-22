@@ -1,8 +1,7 @@
 // Erades
 
-
-#include "abilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/ModMagCalc/MMC_MaxMana.h"
+#include "abilitySystem/AuraAttributeSet.h"
 #include "Interaction/CombatInterface.h"
 
 UMMC_MaxMana::UMMC_MaxMana()

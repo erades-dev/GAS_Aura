@@ -22,25 +22,39 @@ class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInte
 
 public:
 	AAuraCharacterBase();
+	// Begin Combat Interface.
+	virtual FVector GetCombatSocketLocation() override;
+	virtual void Die() override;
+
+	// Begin AbilitySystem Interface.
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	UAttributeSet* GetAttributeSet() const { return (AttributeSet); };
 
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
-	virtual void Die() override;
+
+	UAttributeSet* GetAttributeSet() const { return (AttributeSet); };
 
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath();
 
 protected:
+	// Begin ACharacter Override.
 	virtual void BeginPlay() override;
+
+	virtual void InitAbilityActorInfo();
+	virtual void InitializeDefaultAttributes() const;
+
+	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;
+	void AddCharacterAbilities();
+	void Dissolve();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartDissolveTimeline(const TArray<UMaterialInstanceDynamic*>& DynamicMaterialInstance);
 
 	UPROPERTY(EditAnywhere, Category = "GAS|Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
 	UPROPERTY(EditAnywhere, Category = "GAS|Combat")
 	FName WeaponTipSocketName;
-
-	virtual FVector GetCombatSocketLocation() override;
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
@@ -56,18 +70,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Attributes")
 	TSubclassOf<UGameplayEffect> TransientAttributes;
-
-	virtual void InitAbilityActorInfo();
-	virtual void InitializeDefaultAttributes() const;
-
-	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;
-	void AddCharacterAbilities();
-
-	/** Dissolve Effect **/
-	void Dissolve();
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void StartDissolveTimeline(const TArray<UMaterialInstanceDynamic*> &DynamicMaterialInstance);
 
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;
