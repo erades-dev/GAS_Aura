@@ -2,11 +2,12 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "AbilitySystem/Data/CharacterClassInfo.h"
+#include <CoreMinimal.h>
+#include <Interaction/EnemyInterface.h>
+#include <UI/WidgetController/OverlayWidgetController.h>
+#include <AbilitySystem/Data/CharacterClassInfo.h>
+
 #include "Character/AuraCharacterBase.h"
-#include "Interaction/EnemyInterface.h"
-#include "UI/WidgetController/OverlayWidgetController.h"
 #include "AuraEnemy.generated.h"
 
 class UWidgetComponent;
@@ -14,29 +15,30 @@ class UWidgetComponent;
  *
  */
 UCLASS()
-class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface {
+class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
+{
 	GENERATED_BODY()
 
 public:
 	AAuraEnemy();
 
-	// begin Enemy Interface.
+	// Begin Enemy Interface.
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
-	// end Enemy Interface.
+	// End Enemy Interface.
 
-	// begin Combat Interface.
+	// Begin Combat Interface.
 	virtual int32 GetPlayerLevel() override;
 	virtual void Die() override;
-	// end Enemy Interface.
+	// End Combat Interface.
+
+	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnHealthChanged;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnMaxHealthChanged;
-
-	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 	UPROPERTY(BlueprintReadOnly, Category = "GAS|Combat")
 	bool bHitReaction;
@@ -46,16 +48,19 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "GAS|Combat")
 	float LifeSpan = 5.0f;
+
 protected:
+	// Begin AAuraCharacterBase override.
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeDefaultAttributes() const override;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS|Character Class Defaults")
-	int32 Level = 1;
+	// End AAuraCharacterBase override.
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS|Character Class Defaults")
 	ECharacterClass CharacterClass = ECharacterClass::Warrior;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS|Character Class Defaults")
+	int32 CharacterLevel = 1;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> HealthBar;

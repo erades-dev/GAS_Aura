@@ -1,14 +1,15 @@
 // Erades
 
-#include "AbilitySystem/AuraAttributeSet.h"
+#include "Kismet/GameplayStatics.h"
 #include "GameplayEffectExtension.h"
 #include <Net/UnrealNetwork.h>
 #include "AbilitySystemBlueprintLibrary.h"
-#include "AuraGameplayTags.h"
-#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "GameFramework/Character.h"
+
+#include "AuraGameplayTags.h"
 #include "Interaction/CombatInterface.h"
-#include "Kismet/GameplayStatics.h"
+#include "AbilitySystem/AuraAttributeSet.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Player/AuraPlayerController.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
@@ -33,10 +34,10 @@ UAuraAttributeSet::UAuraAttributeSet()
 	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_MaxHealth, GetMaxHealthAttribute);
 	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_MaxMana, GetMaxManaAttribute);
 
-	TagsToAttributes.Add(GamePlayTags.Attributes_Resistance_Fire, GetFireAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Resistance_Lightning, GetLightningAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Resistance_Arcane, GetArcaneAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Resistance_Physical, GetPhysicalAttribute);
+	TagsToAttributes.Add(GamePlayTags.Attributes_Resistance_Fire, GetResistFireAttribute);
+	TagsToAttributes.Add(GamePlayTags.Attributes_Resistance_Lightning, GetResistLightningAttribute);
+	TagsToAttributes.Add(GamePlayTags.Attributes_Resistance_Arcane, GetResistArcaneAttribute);
+	TagsToAttributes.Add(GamePlayTags.Attributes_Resistance_Physical, GetResistPhysicalAttribute);
 }
 
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -46,8 +47,8 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimePropert
 	// Primary.
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Strength, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Intelligence, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Strength, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Resilience, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Vigor, COND_None, REPNOTIFY_Always);
 
 	// Secondary.
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Armor, COND_None, REPNOTIFY_Always);
@@ -62,10 +63,10 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimePropert
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, MaxMana, COND_None, REPNOTIFY_Always);
 
 	// Resistance.
-	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Fire, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Lightning, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Arcane, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Physical, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, ResistFire, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, ResistLightning, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, ResistArcane, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, ResistPhysical, COND_None, REPNOTIFY_Always);
 
 	// Transient.
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Health, COND_None, REPNOTIFY_Always);
@@ -92,6 +93,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	{
 		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
 	}
+
+	// IncomingDamageAttribute is a meta attribute, that only exist on the server.
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
 		const float LocalIncomingDamage = GetIncomingDamage();
@@ -122,6 +125,58 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 }
 
+void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props)
+{
+	// Source = cause of the effect, Target = target of the effect(owner of this AS)
+	Props.EffectContextHandle = Data.EffectSpec.GetContext();
+	Props.SourceASC = Props.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();
+
+	if (IsValid(Props.SourceASC) && Props.SourceASC->AbilityActorInfo.IsValid() && Props.SourceASC->AbilityActorInfo->AvatarActor.IsValid())
+	{
+		Props.SourceAvatarActor = Props.SourceASC->AbilityActorInfo->AvatarActor.Get();
+		Props.SourceController = Props.SourceASC->AbilityActorInfo->PlayerController.Get();
+		if (!Props.SourceController && Props.SourceAvatarActor)
+		{
+			if (const APawn* Pawn = Cast<APawn>(Props.SourceAvatarActor))
+			{
+				Props.SourceController = Pawn->GetController();
+			}
+		}
+		if (Props.SourceController)
+		{
+			Props.SourceCharacter = Cast<ACharacter>(Props.SourceController->GetPawn());
+		}
+	}
+	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
+	{
+		Props.TargetAvatarActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
+		Props.TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
+		Props.TargetCharacter = Cast<ACharacter>(Props.TargetAvatarActor);
+		Props.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Props.TargetAvatarActor);
+	}
+
+	// if (Data.EvaluatedData.Attribute == GetHealthAttribute()) {
+	//	UE_LOG(LogTemp, Warning, TEXT("Health form get Health(): %f"), GetHealth());
+	//	UE_LOG(LogTemp, Warning, TEXT("Magnitude: %f"), Data.EvaluatedData.Magnitude);
+	// }
+}
+
+void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, const float Damage, const bool bBlockedHit, const bool bCriticalHit)
+{
+	if (Props.SourceCharacter != Props.TargetCharacter)
+	{
+		AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.SourceCharacter->Controller);
+		if (PC)
+		{
+			PC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
+		}
+	}
+}
+
+/*
+ * ON REP functions moved below for clarity.
+ */
+
 // Primary.
 void UAuraAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const
 {
@@ -130,7 +185,7 @@ void UAuraAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength
 
 void UAuraAttributeSet::OnRep_Intelligence(const FGameplayAttributeData& OldIntelligence) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Strength, OldIntelligence);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Intelligence, OldIntelligence);
 }
 
 void UAuraAttributeSet::OnRep_Resilience(const FGameplayAttributeData& OldResilience) const
@@ -195,24 +250,24 @@ void UAuraAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) 
 }
 
 // Resistance.
-void UAuraAttributeSet::OnRep_Fire(const FGameplayAttributeData& OldFire) const
+void UAuraAttributeSet::OnRep_ResistFire(const FGameplayAttributeData& OldResistFire) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Fire, OldFire);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, ResistFire, OldResistFire);
 }
 
-void UAuraAttributeSet::OnRep_Lightning(const FGameplayAttributeData& OldLightning) const
+void UAuraAttributeSet::OnRep_ResistLightning(const FGameplayAttributeData& OldResistLightning) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Lightning, OldLightning);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, ResistLightning, OldResistLightning);
 }
 
-void UAuraAttributeSet::OnRep_Arcane(const FGameplayAttributeData& OldArcane) const
+void UAuraAttributeSet::OnRep_ResistArcane(const FGameplayAttributeData& OldResistArcane) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Arcane, OldArcane);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, ResistArcane, OldResistArcane);
 }
 
-void UAuraAttributeSet::OnRep_Physical(const FGameplayAttributeData& OldPhysical) const
+void UAuraAttributeSet::OnRep_ResistPhysical(const FGameplayAttributeData& OldResistPhysical) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Physical, OldPhysical);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, ResistPhysical, OldResistPhysical);
 }
 
 // Transient.
@@ -224,52 +279,4 @@ void UAuraAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) co
 void UAuraAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldMana) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Mana, OldMana);
-}
-
-void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props)
-{
-	// Source = cause of the effect, Target = target of the effect(owner of this AS)
-	Props.EffectContextHandle = Data.EffectSpec.GetContext();
-	Props.SourceASC = Props.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();
-
-	if (IsValid(Props.SourceASC) && Props.SourceASC->AbilityActorInfo.IsValid() && Props.SourceASC->AbilityActorInfo->AvatarActor.IsValid())
-	{
-		Props.SourceAvatarActor = Props.SourceASC->AbilityActorInfo->AvatarActor.Get();
-		Props.SourceController = Props.SourceASC->AbilityActorInfo->PlayerController.Get();
-		if (!Props.SourceController && Props.SourceAvatarActor)
-		{
-			if (const APawn* Pawn = Cast<APawn>(Props.SourceAvatarActor))
-			{
-				Props.SourceController = Pawn->GetController();
-			}
-		}
-		if (Props.SourceController)
-		{
-			Props.SourceCharacter = Cast<ACharacter>(Props.SourceController->GetPawn());
-		}
-	}
-	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
-	{
-		Props.TargetAvatarActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
-		Props.TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
-		Props.TargetCharacter = Cast<ACharacter>(Props.TargetAvatarActor);
-		Props.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Props.TargetAvatarActor);
-	}
-
-	// if (Data.EvaluatedData.Attribute == GetHealthAttribute()) {
-	//	UE_LOG(LogTemp, Warning, TEXT("Health form get Health(): %f"), GetHealth());
-	//	UE_LOG(LogTemp, Warning, TEXT("Magnitude: %f"), Data.EvaluatedData.Magnitude);
-	// }
-}
-
-void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, const float Damage, const bool bBlockedHit, const bool bCriticalHit)
-{
-	if (Props.SourceCharacter != Props.TargetCharacter)
-	{
-		AAuraPlayerController* PC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0));
-		if (PC)
-		{
-			PC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
-		}
-	}
 }

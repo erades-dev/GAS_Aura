@@ -13,7 +13,8 @@
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
-AAuraProjectile::AAuraProjectile() {
+AAuraProjectile::AAuraProjectile()
+{
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
@@ -31,37 +32,50 @@ AAuraProjectile::AAuraProjectile() {
 	ProjectileMovement->ProjectileGravityScale = 0.f;
 }
 
-void AAuraProjectile::Destroyed() {
-	if (!bHit && !HasAuthority()) {
+void AAuraProjectile::Destroyed()
+{
+	Super::Destroyed();
+	if (!bHit && !HasAuthority())
+	{
 		PlayOnHitCosmetics();
 	}
-	Super::Destroyed();
 }
 
-void AAuraProjectile::BeginPlay() {
+void AAuraProjectile::BeginPlay()
+{ 
 	Super::BeginPlay();
 	SetLifeSpan(LifeSpan);
+	// TODO: Looping sound disable because returning nullptr on server mode.
+	// UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent())->bStopWhenOwnerDestroyed = true;
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AAuraProjectile::OnSphereOverlap);
-
-	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
 }
 
 void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// TODO: Looks like explosion is beeing spawn on the launcher and target. Duplicates. 
+	if (DamageEffectSpecHandle.Data.IsValid() &&
+		DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor)
+		return;
+
 	PlayOnHitCosmetics();
-	if (HasAuthority()) {
+	if (HasAuthority())
+	{
 		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
-		if (TargetASC) {
+		if (TargetASC)
+		{
 			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
 		}
 		Destroy();
-	} else {
+	}
+	else
+	{
 		bHit = true;
 	}
 }
 
-void AAuraProjectile::PlayOnHitCosmetics() const {
-	LoopingSoundComponent->Stop();
+void AAuraProjectile::PlayOnHitCosmetics() const
+{
 	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
 }

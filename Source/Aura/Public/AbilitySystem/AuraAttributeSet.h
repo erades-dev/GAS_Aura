@@ -38,8 +38,31 @@ struct FEffectProperties
 	UPROPERTY()
 	ACharacter* TargetCharacter = nullptr;
 };
-/**
+
+/*
+ * Strength
+ * Intelligence
+ * Resilience
+ * Vigor
  *
+ * Armor
+ * ArmorPenetration
+ * BlockChance
+ * CriticalHitChance
+ * CriticalHitDamage
+ * CriticalHitResistance
+ * HealthRegeneration
+ * ManaRegeneration
+ * MaxHealth
+ * MaxMana
+ *
+ * ResistFire;
+ * ResistLightning;
+ * ResistArcane;
+ * ResistPhysical;
+ *
+ * Health
+ * Mana
  */
 UCLASS()
 class AURA_API UAuraAttributeSet : public UAttributeSet
@@ -48,38 +71,16 @@ class AURA_API UAuraAttributeSet : public UAttributeSet
 
 public:
 	UAuraAttributeSet();
+	// Begin UObject Override.
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+
+	// Begin UAttributeSet Override.
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+
 	TMap<FGameplayTag, FGameplayAttribute (*)()> TagsToAttributes;
 
-	// Strength
-	// Intelligence
-	// Resilience
-	// Vigor
-
-	// Armor
-	// ArmorPenetration
-	// BlockChance
-	// CriticalHitChance
-	// CriticalHitDamage
-	// CriticalHitResistance
-	// HealthRegeneration
-	// ManaRegeneration
-	// MaxHealth
-	// MaxMana
-
-	// Fire;
-	// Lightning;
-	// Arcane;
-	// Physical;
-
-	// Health
-	// Mana
-
-	/*
-	 * Primary Attributes
-	 */
+	// Primary Attributes.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "GAS|Primary Attributes")
 	FGameplayAttributeData Strength;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Strength);
@@ -96,10 +97,7 @@ public:
 	FGameplayAttributeData Vigor;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Vigor);
 
-	/*
-	 * Secondary Attributes
-	 */
-
+	// Secondary Attributes.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Armor, Category = "GAS|Primary Attributes")
 	FGameplayAttributeData Armor;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Armor);
@@ -140,30 +138,24 @@ public:
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana);
 
-	/*
-	 * Resistance Attributes
-	 */
+	// Resistance Attributes.
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ResistFire, Category = "GAS|Resistance Attributes")
+	FGameplayAttributeData ResistFire;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ResistFire);
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Fire, Category = "GAS|Vital Attributes")
-	FGameplayAttributeData Fire;
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Fire);
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ResistLightning, Category = "GAS|Resistance Attributes")
+	FGameplayAttributeData ResistLightning;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ResistLightning);
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Lightning, Category = "GAS|Vital Attributes")
-	FGameplayAttributeData Lightning;
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Lightning);
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ResistArcane, Category = "GAS|Resistance Attributes")
+	FGameplayAttributeData ResistArcane;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ResistArcane);
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Arcane, Category = "GAS|Vital Attributes")
-	FGameplayAttributeData Arcane;
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Arcane);
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ResistPhysical, Category = "GAS|Resistance Attributes")
+	FGameplayAttributeData ResistPhysical;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ResistPhysical);
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Physical, Category = "GAS|Vital Attributes")
-	FGameplayAttributeData Physical;
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Physical);
-
-	/*
-	 * Transient Attributes
-	 */
-
+	// Transient Attributes.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "GAS|Transient Attributes")
 	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health);
@@ -172,10 +164,7 @@ public:
 	FGameplayAttributeData Mana;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana);
 
-	/*
-	 * Meta Attributes.
-	 */
-
+	// Meta Attributes.
 	UPROPERTY(BlueprintReadOnly, Category = "GAS|Meta Attributes");
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
@@ -226,16 +215,16 @@ public:
 
 	// Resistances.
 	UFUNCTION()
-	void OnRep_Fire(const FGameplayAttributeData& OldFire) const;
+	void OnRep_ResistFire(const FGameplayAttributeData& OldResistFire) const;
 
 	UFUNCTION()
-	void OnRep_Lightning(const FGameplayAttributeData& OldLightning) const;
+	void OnRep_ResistLightning(const FGameplayAttributeData& OldResistLightning) const;
 
 	UFUNCTION()
-	void OnRep_Arcane(const FGameplayAttributeData& OldArcane) const;
+	void OnRep_ResistArcane(const FGameplayAttributeData& OldResistArcane) const;
 
 	UFUNCTION()
-	void OnRep_Physical(const FGameplayAttributeData& OldPhysical) const;
+	void OnRep_ResistPhysical(const FGameplayAttributeData& OldResistPhysical) const;
 
 	// Transient
 	UFUNCTION()

@@ -52,6 +52,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "GAS|Cosmetics")
 	TObjectPtr<USoundBase> LoopingSound;
 
-	UPROPERTY()
-	TObjectPtr<UAudioComponent> LoopingSoundComponent;
+	//UPROPERTY()
+	//TObjectPtr<UAudioComponent> LoopingSoundComponent;
 };

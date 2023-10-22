@@ -41,24 +41,13 @@ void AAuraEnemy::UnHighlightActor()
 
 int32 AAuraEnemy::GetPlayerLevel()
 {
-	return (Level);
+	return (CharacterLevel);
 }
 
 void AAuraEnemy::Die()
 {
 	SetLifeSpan(LifeSpan);
 	Super::Die();
-}
-
-void AAuraEnemy::BeginPlay()
-{
-	Super::BeginPlay();
-	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
-	check(AbilitySystemComponent);
-	InitAbilityActorInfo();
-	InitializeDefaultAttributes();
-	InitializeBindings();
-	UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
 }
 
 void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, const int32 NewCount)
@@ -70,6 +59,20 @@ void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, const int32 
 		GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 }
 
+void AAuraEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+	check(AbilitySystemComponent);
+	InitAbilityActorInfo();
+	InitializeBindings();
+	if (HasAuthority())
+	{
+		InitializeDefaultAttributes();
+		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+	}
+}
+
 void AAuraEnemy::InitAbilityActorInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
@@ -78,7 +81,7 @@ void AAuraEnemy::InitAbilityActorInfo()
 
 void AAuraEnemy::InitializeDefaultAttributes() const
 {
-	UAuraAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
+	UAuraAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, CharacterLevel, AbilitySystemComponent);
 }
 
 void AAuraEnemy::InitializeBindings()
