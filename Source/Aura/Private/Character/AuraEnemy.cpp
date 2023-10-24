@@ -48,7 +48,7 @@ void AAuraEnemy::UnHighlightActor()
 	Weapon->SetRenderCustomDepth(false);
 }
 
-int32 AAuraEnemy::GetPlayerLevel()
+int32 AAuraEnemy::GetCharacterLevel()
 {
 	return (CharacterLevel);
 }
@@ -57,6 +57,16 @@ void AAuraEnemy::Die()
 {
 	SetLifeSpan(LifeSpan);
 	Super::Die();
+}
+
+void AAuraEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
+{
+	CombatTarget = InCombatTarget;
+}
+
+AActor* AAuraEnemy::GetCombatTarget_Implementation() const
+{
+	return (CombatTarget);
 }
 
 void AAuraEnemy::PossessedBy(AController* NewController)
@@ -69,22 +79,18 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
 	AuraAIController->RunBehaviorTree(BehaviorTree);
 
-	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Warrior);
-
+	const bool bIsRanged = CharacterClass != ECharacterClass::Warrior;
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), bIsRanged);
 }
 
 void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, const int32 NewCount)
 {
-	bHitReaction = (NewCount > 0);
-	if (bHitReaction)
+	bHitReacting = (NewCount > 0);
+
+	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0 : BaseWalkSpeed;
+	if (AuraAIController && AuraAIController->GetBlackboardComponent())
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 0;
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), true);
-	}
-	else
-	{
-		GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReacting);
 	}
 }
 
@@ -98,7 +104,7 @@ void AAuraEnemy::BeginPlay()
 	if (HasAuthority())
 	{
 		InitializeDefaultAttributes();
-		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
 	}
 }
 

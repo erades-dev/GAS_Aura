@@ -29,8 +29,10 @@ public:
 	virtual void UnHighlightActor() override;
 
 	// Begin Combat Interface.
-	virtual int32 GetPlayerLevel() override;
+	virtual int32 GetCharacterLevel() override;
 	virtual void Die() override;
+	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
+	virtual AActor* GetCombatTarget_Implementation() const override;
 
 	// Begin ACharacter Override.
 	virtual void PossessedBy(AController* NewController) override;
@@ -44,13 +46,16 @@ public:
 	FOnAttributeChangedSignature OnMaxHealthChanged;
 
 	UPROPERTY(BlueprintReadOnly, Category = "GAS|Combat")
-	bool bHitReaction;
+	bool bHitReacting;
 
-	UPROPERTY(BlueprintReadOnly, Category = "GAS|Combat")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS|Combat")
 	float BaseWalkSpeed = 250.0f;
 
 	UPROPERTY(BlueprintReadOnly, Category = "GAS|Combat")
 	float LifeSpan = 5.0f;
+
+	UPROPERTY(BlueprintReadWrite, Category = "GAS|Combat")
+	TObjectPtr<AActor> CombatTarget;
 
 protected:
 	// Begin AAuraCharacterBase override.

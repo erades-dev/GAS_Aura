@@ -72,7 +72,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Transient_Mana = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Transient.Mana"), FString("Reduce damage taken, improves block chance"));
 
-	// Message
+	// Message.
 	GameplayTags.Message_HealthCrystal = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Message.HealthCrystal"), FString("Reduce damage taken, improves block chance"));
 
@@ -85,8 +85,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Message_ManaPotion = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Message.ManaPotion"), FString("Reduce damage taken, improves block chance"));
 
-	// Input
-
+	// Input.
 	GameplayTags.Input_Primary = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Input.Primary"), FString(""));
 
@@ -106,7 +105,6 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("Input.4"), FString(""));
 
 	// ...
-
 	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Effects.HitReact"), FString("Hit reaction"));
 
@@ -124,6 +122,25 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 
 	GameplayTags.Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Damage.Physical"), FString("Physical damage type"));
+
+	// Abilities.
+	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Attack"), FString("Attack ability"));
+	
+	// Montage.
+	GameplayTags.Montage_Attack_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.Weapon"), FString("Weapon"));
+
+	
+	GameplayTags.Montage_Attack_RightHand = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.RightHand"), FString("Right Hand"));
+
+	
+	GameplayTags.Montage_Attack_LeftHand = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.LeftHand"), FString("Left hand"));
+
+
+
 
 	// TODO: Keep this class for tags.. Don't we have a GAS globals?
 	// Damage Type Array

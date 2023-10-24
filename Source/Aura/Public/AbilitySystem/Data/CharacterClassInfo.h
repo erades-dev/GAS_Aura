@@ -24,6 +24,9 @@ struct FCharacterClassDefaultInfo
 
 	UPROPERTY(EditDefaultsOnly, Category = "GAS|Class Defaults")
 	TSubclassOf<UGameplayEffect> PrimaryAttributes;
+
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Class Defaults")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 };
 
 /**
@@ -35,19 +38,19 @@ class AURA_API UCharacterClassInfo : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, Category = "GAS|Class Defaults")
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Common Class")
 	TMap<ECharacterClass, FCharacterClassDefaultInfo> CharacterClassInformation;
 
-	UPROPERTY(EditDefaultsOnly, Category = "GAS|Class Defaults Common")
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Common Class")
 	TSubclassOf<UGameplayEffect> SecondaryAttributes;
 
-	UPROPERTY(EditDefaultsOnly, Category = "GAS|Class Defaults Common")
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Common Class")
 	TSubclassOf<UGameplayEffect> TransientAttributes;
 
-	UPROPERTY(EditDefaultsOnly, Category = "GAS|Class Defaults Common")
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Common Class")
 	TArray<TSubclassOf<UGameplayAbility>> CommonAbilities;
 
-	UPROPERTY(EditDefaultsOnly, Category = "GAS|Class Defaults Common")
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Common Class")
 	TObjectPtr<UCurveTable> DamageCalculationsCoefficients;
 
 	FCharacterClassDefaultInfo GetClassDefaultInfo(ECharacterClass CharacterClass);

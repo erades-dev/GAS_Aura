@@ -31,7 +31,7 @@ public:
 		float Level, UAbilitySystemComponent* ASC);
 
 	UFUNCTION(BlueprintCallable, Category = "GAS|Character Class Defaults")
-	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC);
+	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, ECharacterClass CharacterClass);
 
 	UFUNCTION(BlueprintCallable, Category = "GAS|Character Class Defaults")
 	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContextObject);
@@ -47,4 +47,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "GAS|Aura AbilitySystemLibrary|GameplayEffects")
 	static void SetIsCriticalHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const bool bInIsBlockedHit);
+
+	UFUNCTION(BlueprintCallable, Category = "GAS|Aura AbilitySystemLibrary|GameplayMechanics")
+	static void GetLifePlayersWithinRadius(
+		const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors,
+		const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin);
+
+	UFUNCTION(BlueprintPure, Category = "GAS|Aura AbilitySystemLibrary|GameplayMechanics")
+	static bool IsNotFriend(AActor* ActorA, AActor* ActorB);
 };

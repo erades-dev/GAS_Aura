@@ -23,13 +23,15 @@ class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInte
 public:
 	AAuraCharacterBase();
 	// Begin Combat Interface.
-	virtual FVector GetCombatSocketLocation() override;
 	virtual void Die() override;
+	virtual bool IsDead_Implementation() const override;
+	virtual AActor* GetAvatar_Implementation() override;
+	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) override;
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
 
 	// Begin AbilitySystem Interface.
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
-	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 
 	UAttributeSet* GetAttributeSet() const { return (AttributeSet); };
 
@@ -56,6 +58,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "GAS|Combat")
 	FName WeaponTipSocketName;
 
+	UPROPERTY(EditAnywhere, Category = "GAS|Combat")
+	FName LeftHand;
+
+	UPROPERTY(EditAnywhere, Category = "GAS|Combat")
+	FName RightHand;
+
+	UPROPERTY(EditAnywhere, Category = "GAS|Combat")
+	TArray<FTaggedMontage> AttackMontages;
+
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
@@ -76,6 +87,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TObjectPtr<UMaterialInstance> DissolveMaterialInstanceWeapon;
+
+	bool bDead = false;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "GAS|Abilities")

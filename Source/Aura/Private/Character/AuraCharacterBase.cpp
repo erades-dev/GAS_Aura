@@ -2,6 +2,7 @@
 
 #include "Character/AuraCharacterBase.h"
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
@@ -22,6 +23,40 @@ AAuraCharacterBase::AAuraCharacterBase()
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
+void AAuraCharacterBase::Die()
+{
+	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+	MulticastHandleDeath();
+}
+
+bool AAuraCharacterBase::IsDead_Implementation() const
+{
+	return (bDead);
+}
+
+AActor* AAuraCharacterBase::GetAvatar_Implementation()
+{
+	return (this);
+}
+
+FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag)
+{
+	const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+	if (MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_Weapon) && IsValid(Weapon))
+	{
+		return (Weapon->GetSocketLocation(WeaponTipSocketName));
+	}
+	if (MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_LeftHand))
+	{
+		return (GetMesh()->GetSocketLocation(LeftHand));
+	}
+	if (MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_RightHand))
+	{
+		return (GetMesh()->GetSocketLocation(RightHand));
+	}
+	return (FVector());
+}
+
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
 {
 	return (AbilitySystemComponent);
@@ -32,11 +67,9 @@ UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
 	return (HitReactMontage);
 }
 
-void AAuraCharacterBase::Die()
+TArray<FTaggedMontage> AAuraCharacterBase::GetAttackMontages_Implementation()
 {
-
-	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
-	MulticastHandleDeath();
+	return (AttackMontages);
 }
 
 void AAuraCharacterBase::MulticastHandleDeath_Implementation()
@@ -52,16 +85,13 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Dissolve();
+
+	bDead = true;
 }
 
 void AAuraCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-}
-
-FVector AAuraCharacterBase::GetCombatSocketLocation()
-{
-	return (Weapon->GetSocketLocation(WeaponTipSocketName));
 }
 
 void AAuraCharacterBase::InitAbilityActorInfo()
