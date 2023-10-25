@@ -52,7 +52,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartDissolveTimeline(const TArray<UMaterialInstanceDynamic*>& DynamicMaterialInstance);
 
-	UPROPERTY(EditAnywhere, Category = "GAS|Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS|Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
 	UPROPERTY(EditAnywhere, Category = "GAS|Combat")
