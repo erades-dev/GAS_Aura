@@ -9,6 +9,7 @@
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
+class UNiagaraSystem;
 class UGameplayAbility;
 class UGameplayEffect;
 class UAbilitySystemComponent;
@@ -29,6 +30,10 @@ public:
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
+	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
+	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag) override;
+	virtual int32 GetMinionCount_Implementation() override;
+	virtual void IncrementMinionCount_Implementation(int32 Amount) override;
 
 	// Begin AbilitySystem Interface.
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -82,13 +87,21 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Attributes")
 	TSubclassOf<UGameplayEffect> TransientAttributes;
 
-	UPROPERTY(EditAnywhere, Category = "GAS")
+	UPROPERTY(EditAnywhere, Category = "GAS|Visual")
 	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;
 
-	UPROPERTY(EditAnywhere, Category = "GAS")
+	UPROPERTY(EditAnywhere, Category = "GAS|Visual")
 	TObjectPtr<UMaterialInstance> DissolveMaterialInstanceWeapon;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS|Visual")
+	UNiagaraSystem* BloodEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS|Visual")
+	USoundBase* DeathSound;
+
 	bool bDead = false;
+
+	int32 MinionCount = 0;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "GAS|Abilities")

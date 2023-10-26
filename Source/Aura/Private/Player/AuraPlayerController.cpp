@@ -15,7 +15,7 @@
 #include "UI/Widget/DamageTextComponent.h"
 
 AAuraPlayerController::AAuraPlayerController()
-	: LastActor(nullptr), ThisActor(nullptr)
+	: CursorLastActor(nullptr), CursorThisActor(nullptr)
 {
 	bReplicates = true;
 	Spline = CreateDefaultSubobject<USplineComponent>("Spline");
@@ -107,15 +107,15 @@ void AAuraPlayerController::CursorTrace()
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 	if (CursorHit.bBlockingHit)
 	{
-		LastActor = ThisActor;
-		ThisActor = Cast<IEnemyInterface>(CursorHit.GetActor());
+		CursorLastActor = CursorThisActor;
+		CursorThisActor = Cast<IEnemyInterface>(CursorHit.GetActor());
 
-		if (LastActor != ThisActor)
+		if (CursorLastActor != CursorThisActor)
 		{
-			if (LastActor)
-				LastActor->UnHighlightActor();
-			if (ThisActor)
-				ThisActor->HighlightActor();
+			if (CursorLastActor)
+				CursorLastActor->UnHighlightActor();
+			if (CursorThisActor)
+				CursorThisActor->HighlightActor();
 		}
 	}
 }
@@ -124,7 +124,7 @@ void AAuraPlayerController::AbilityInputTagPressed(const FGameplayTag InputTag)
 {
 	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().Input_Primary))
 	{
-		bTargeting = ThisActor ? true : false;
+		bTargeting = CursorThisActor ? true : false;
 		bAutoRunning = false;
 	}
 }

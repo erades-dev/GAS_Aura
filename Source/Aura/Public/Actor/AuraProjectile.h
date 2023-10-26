@@ -12,7 +12,8 @@ class UProjectileMovementComponent;
 class USphereComponent;
 
 UCLASS()
-class AURA_API AAuraProjectile : public AActor {
+class AURA_API AAuraProjectile : public AActor
+{
 	GENERATED_BODY()
 
 public:
@@ -38,7 +39,7 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	float LifeSpan = 15.0f;
 
-	void PlayOnHitCosmetics() const;
+	void PlayOnHitCosmetics();
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
@@ -52,6 +53,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "GAS|Cosmetics")
 	TObjectPtr<USoundBase> LoopingSound;
 
-	//UPROPERTY()
-	//TObjectPtr<UAudioComponent> LoopingSoundComponent;
+	// UPROPERTY()
+	// TObjectPtr<UAudioComponent> LoopingSoundComponent;
 };

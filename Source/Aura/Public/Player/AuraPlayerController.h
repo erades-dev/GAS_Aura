@@ -36,6 +36,18 @@ protected:
 	virtual void PlayerTick(float DeltaTime) override;
 
 private:
+	void AbilityInputTagPressed(FGameplayTag InputTag);
+	void AbilityInputTagReleased(FGameplayTag InputTag);
+	void AbilityInputTagHeld(FGameplayTag InputTag);
+
+	void Move(const FInputActionValue& InputActionValue);
+	void AutoRun();
+
+	void CursorTrace();
+
+	void HoldPositionPressed() { bHoldPositionDown = true; };
+	void HoldPositionReleased() { bHoldPositionDown = false; };
+
 	UPROPERTY();
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
 	UAuraAbilitySystemComponent* GetASC();
@@ -53,8 +65,6 @@ private:
 	TObjectPtr<UInputAction> HoldPosition;
 
 	bool bHoldPositionDown = false;
-	void HoldPositionPressed() { bHoldPositionDown = true; };
-	void HoldPositionReleased() { bHoldPositionDown = false; };
 
 	FVector CachedDestination = FVector::ZeroVector;
 	float FollowTime = 1.f;
@@ -68,17 +78,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "GAS|Input")
 	TObjectPtr<USplineComponent> Spline;
 
-	void Move(const FInputActionValue& InputActionValue);
-	void AutoRun();
-
-	void CursorTrace();
 	FHitResult CursorHit;
-	IEnemyInterface* LastActor;
-	IEnemyInterface* ThisActor;
-
-	void AbilityInputTagPressed(FGameplayTag InputTag);
-	void AbilityInputTagReleased(FGameplayTag InputTag);
-	void AbilityInputTagHeld(FGameplayTag InputTag);
+	IEnemyInterface* CursorLastActor;
+	IEnemyInterface* CursorThisActor;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;

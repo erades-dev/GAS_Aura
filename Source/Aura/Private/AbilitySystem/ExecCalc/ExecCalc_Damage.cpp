@@ -113,7 +113,7 @@ void UExecCalc_Damage::Execute_Implementation(
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef, EvaluationParameters, ResistTypeValue);
 		ResistTypeValue = FMath::Clamp(ResistTypeValue, 0, 100);
 
-		float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeTag);
+		float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeTag, false);
 
 		DamageTypeValue *= (100.f - ResistTypeValue) / 100.f;
 		Damage += DamageTypeValue;

@@ -62,7 +62,11 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 		return;
 	}
 
-	PlayOnHitCosmetics();
+	if (!bHit)
+	{
+		PlayOnHitCosmetics();
+	}
+
 	if (HasAuthority())
 	{
 		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
@@ -78,8 +82,10 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	}
 }
 
-void AAuraProjectile::PlayOnHitCosmetics() const
+void AAuraProjectile::PlayOnHitCosmetics()
 {
 	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+	// TODO: Stop looping sound.
+	bHit = true;
 }
