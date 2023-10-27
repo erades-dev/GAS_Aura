@@ -7,6 +7,8 @@
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "OverlayWidgetController.generated.h"
 
+class UAuraAbilitySystemComponent;
+class UAbilityInfo;
 class UAuraUserWidget;
 struct FGameplayTagContainer;
 struct FOnAttributeChangeData;
@@ -30,6 +32,7 @@ struct FUIWidgetRow : public FTableRowBase
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, Row);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FAuraAbilityInfo&, Info);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, Value);
 
 /**
@@ -44,8 +47,13 @@ public:
 	virtual void BroadCastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;
 
+	void OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraAbilitySystemComponent);
+
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Messages")
 	FMessageWidgetRowSignature MessageWidgetRowDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Messages")
+	FAbilityInfoSignature AbilityInfoDelegate;
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Attributes")
 	FOnAttributeChangedSignature OnHealthChanged;
@@ -59,13 +67,15 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Attributes")
 	FOnAttributeChangedSignature OnMaxManaChanged;
 
-
 protected:
+	template <typename T>
+	static T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
+
 	UPROPERTY(EditDefaultsOnly, Category = "GAS|Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
 
-	template <typename T>
-	static T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Widget Data")
+	TObjectPtr<UAbilityInfo> AbilityInfo;
 };
 
 template <typename T>
