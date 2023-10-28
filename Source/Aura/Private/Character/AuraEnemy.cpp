@@ -36,6 +36,20 @@ AAuraEnemy::AAuraEnemy()
 	HealthBar->SetupAttachment(GetRootComponent());
 }
 
+void AAuraEnemy::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if (!HasAuthority())
+		return;
+
+	AuraAIController = Cast<AAuraAIController>(NewController);
+	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	AuraAIController->RunBehaviorTree(BehaviorTree);
+
+	const bool bIsRanged = CharacterClass != ECharacterClass::Warrior;
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), bIsRanged);
+}
+
 void AAuraEnemy::HighlightActor()
 {
 	GetMesh()->SetRenderCustomDepth(true);
@@ -46,11 +60,6 @@ void AAuraEnemy::UnHighlightActor()
 {
 	GetMesh()->SetRenderCustomDepth(false);
 	Weapon->SetRenderCustomDepth(false);
-}
-
-int32 AAuraEnemy::GetCharacterLevel()
-{
-	return (CharacterLevel);
 }
 
 void AAuraEnemy::Die()
@@ -71,20 +80,6 @@ void AAuraEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
 AActor* AAuraEnemy::GetCombatTarget_Implementation() const
 {
 	return (CombatTarget);
-}
-
-void AAuraEnemy::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-	if (!HasAuthority())
-		return;
-
-	AuraAIController = Cast<AAuraAIController>(NewController);
-	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
-	AuraAIController->RunBehaviorTree(BehaviorTree);
-
-	const bool bIsRanged = CharacterClass != ECharacterClass::Warrior;
-	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), bIsRanged);
 }
 
 void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, const int32 NewCount)

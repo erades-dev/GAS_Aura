@@ -42,6 +42,8 @@ public:
 	FGameplayTag Attributes_Transient_Health;
 	FGameplayTag Attributes_Transient_Mana;
 
+	FGameplayTag Attributes_Meta_IncomingXp;
+
 	FGameplayTag Message_HealthCrystal;
 	FGameplayTag Message_HealthPotion;
 	FGameplayTag Message_ManaCrystal;

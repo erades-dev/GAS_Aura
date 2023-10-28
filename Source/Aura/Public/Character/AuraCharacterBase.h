@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include <AbilitySystemInterface.h>
 
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
@@ -25,6 +26,8 @@ public:
 	AAuraCharacterBase();
 	// Begin Combat Interface.
 	virtual void Die() override;
+	virtual ECharacterClass GetCharacterClass_Implementation() override;
+	virtual int32 GetCharacterLevel_Implementation() override;
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvatar_Implementation() override;
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) override;
@@ -57,21 +60,6 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartDissolveTimeline(const TArray<UMaterialInstanceDynamic*>& DynamicMaterialInstance);
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS|Combat")
-	TObjectPtr<USkeletalMeshComponent> Weapon;
-
-	UPROPERTY(EditAnywhere, Category = "GAS|Combat")
-	FName WeaponTipSocketName;
-
-	UPROPERTY(EditAnywhere, Category = "GAS|Combat")
-	FName LeftHand;
-
-	UPROPERTY(EditAnywhere, Category = "GAS|Combat")
-	FName RightHand;
-
-	UPROPERTY(EditAnywhere, Category = "GAS|Combat")
-	TArray<FTaggedMontage> AttackMontages;
-
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
@@ -87,6 +75,21 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS|Attributes")
 	TSubclassOf<UGameplayEffect> TransientAttributes;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS|Combat")
+	TObjectPtr<USkeletalMeshComponent> Weapon;
+
+	UPROPERTY(EditAnywhere, Category = "GAS|Combat|Socket")
+	FName WeaponTipSocketName;
+
+	UPROPERTY(EditAnywhere, Category = "GAS|Combat|Socket")
+	FName LeftHand;
+
+	UPROPERTY(EditAnywhere, Category = "GAS|Combat|Socket")
+	FName RightHand;
+
+	UPROPERTY(EditAnywhere, Category = "GAS|Combat|Socket")
+	TArray<FTaggedMontage> AttackMontages;
+
 	UPROPERTY(EditAnywhere, Category = "GAS|Visual")
 	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;
 
@@ -99,6 +102,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS|Visual")
 	USoundBase* DeathSound;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS|Character")
+	ECharacterClass CharacterClass = ECharacterClass::Warrior;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS|Character")
+	int32 CharacterLevel = 1;
+
 	bool bDead = false;
 
 	int32 MinionCount = 0;
@@ -107,6 +116,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "GAS|Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 
-	UPROPERTY(EditAnywhere, Category = "GAS|Combat")
+	UPROPERTY(EditAnywhere, Category = "GAS|Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> StartupPassiveAbilities;
+
+	UPROPERTY(EditAnywhere, Category = "GAS|Combat|Montage")
 	TObjectPtr<UAnimMontage> HitReactMontage;
 };

@@ -81,11 +81,15 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability, 1);
 		ASC->GiveAbility(AbilitySpec);
 	}
+
 	for (const auto Ability : CharacterClassInfo->GetClassDefaultInfo(CharacterClass).StartupAbilities)
 	{
-		ICombatInterface* CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor());
-		const int Level = CombatInterface ? CombatInterface->GetCharacterLevel() : 1;
-		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability, Level);
+		int CharacterLevel = 1;
+		if (ASC->GetAvatarActor()->Implements<UCombatInterface>())
+		{
+			CharacterLevel = ICombatInterface::Execute_GetCharacterLevel(ASC->GetAvatarActor());
+		}
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability, CharacterLevel);
 		ASC->GiveAbility(AbilitySpec);
 	}
 }
@@ -165,12 +169,23 @@ void UAuraAbilitySystemLibrary::GetLifePlayersWithinRadius(const UObject* WorldC
 	}
 }
 
-bool UAuraAbilitySystemLibrary::IsNotFriend(AActor* ActorA, AActor* ActorB)
+bool UAuraAbilitySystemLibrary::IsNotFriend(const AActor* ActorA, const AActor* ActorB)
 {
 	const bool bBothArePlayer = ActorA->ActorHasTag(FName("Player")) && ActorB->ActorHasTag(FName("Player"));
 	const bool bBothAreEnemy = ActorA->ActorHasTag(FName("Enemy")) && ActorB->ActorHasTag(FName("Enemy"));
 	const bool bFriends = (bBothArePlayer || bBothAreEnemy);
 	return (!bFriends);
+}
+
+int32 UAuraAbilitySystemLibrary::GetXpRewardFromClassAndLevel(const UObject* WorldContextObject, const ECharacterClass CharacterClass, const int32 Level)
+{
+	UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
+	if (!CharacterClassInfo)
+		return (0);
+
+	const FCharacterClassDefaultInfo Info = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
+	const float XpReward = Info.XpReward.GetValueAtLevel(Level);
+	return (static_cast<int32>(XpReward));
 }
 
 // void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level,

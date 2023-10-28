@@ -72,6 +72,10 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Transient_Mana = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Transient.Mana"), FString("Reduce damage taken, improves block chance"));
 
+	// Meta.
+	GameplayTags.Attributes_Meta_IncomingXp = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Meta.IncomingXp"), FString("Incoming experience"));
+
 	// Message.
 	GameplayTags.Message_HealthCrystal = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Message.HealthCrystal"), FString("Reduce damage taken, improves block chance"));
@@ -136,7 +140,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	// Cooldown.
 	GameplayTags.Cooldown_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.Fire.FireBolt"), FString("Cooldown for Firebolt"));
-	
+
 	// CombatSocket.
 	GameplayTags.CombatSocket_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("CombatSocket.Weapon"), FString("Weapon"));

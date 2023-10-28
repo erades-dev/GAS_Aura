@@ -5,7 +5,6 @@
 #include <CoreMinimal.h>
 #include <Interaction/EnemyInterface.h>
 #include <UI/WidgetController/OverlayWidgetController.h>
-#include <AbilitySystem/Data/CharacterClassInfo.h>
 
 #include "Character/AuraCharacterBase.h"
 #include "AuraEnemy.generated.h"
@@ -23,27 +22,25 @@ class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
 
 public:
 	AAuraEnemy();
+	// Begin ACharacter Override.
+	virtual void PossessedBy(AController* NewController) override;
 
-	// Begin Enemy Interface.
+	// Begin IEnemyInterface.
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 
-	// Begin Combat Interface.
-	virtual int32 GetCharacterLevel() override;
+	// Begin ICombatInterface.
 	virtual void Die() override;
 	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
 	virtual AActor* GetCombatTarget_Implementation() const override;
 
-	// Begin ACharacter Override.
-	virtual void PossessedBy(AController* NewController) override;
-
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 	UPROPERTY(BlueprintAssignable)
-	FOnAttributeChangedSignature OnHealthChanged;
+	FOnFloatChangedSignature OnHealthChanged;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnAttributeChangedSignature OnMaxHealthChanged;
+	FOnFloatChangedSignature OnMaxHealthChanged;
 
 	UPROPERTY(BlueprintReadOnly, Category = "GAS|Combat")
 	bool bHitReacting;
@@ -64,12 +61,6 @@ protected:
 	virtual void InitializeDefaultAttributes() const override;
 
 	void InitializeBindings();
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS|Character Class Defaults")
-	ECharacterClass CharacterClass = ECharacterClass::Warrior;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS|Character Class Defaults")
-	int32 CharacterLevel = 1;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> HealthBar;

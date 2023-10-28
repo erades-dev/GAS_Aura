@@ -30,6 +30,16 @@ void AAuraCharacterBase::Die()
 	MulticastHandleDeath();
 }
 
+ECharacterClass AAuraCharacterBase::GetCharacterClass_Implementation()
+{
+	return (CharacterClass);
+}
+
+int32 AAuraCharacterBase::GetCharacterLevel_Implementation()
+{
+	return (CharacterLevel);
+}
+
 bool AAuraCharacterBase::IsDead_Implementation() const
 {
 	return (bDead);
@@ -151,6 +161,7 @@ void AAuraCharacterBase::AddCharacterAbilities()
 		return;
 	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 	AuraASC->AddCharacterAbilities(StartupAbilities);
+	AuraASC->AddCharacterPassiveAbilities(StartupPassiveAbilities);
 }
 
 void AAuraCharacterBase::Dissolve()

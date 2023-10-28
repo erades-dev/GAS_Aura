@@ -54,5 +54,7 @@ public:
 		const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin);
 
 	UFUNCTION(BlueprintPure, Category = "GAS|Aura AbilitySystemLibrary|GameplayMechanics")
-	static bool IsNotFriend(AActor* ActorA, AActor* ActorB);
+	static bool IsNotFriend(const AActor* ActorA, const AActor* ActorB);
+
+	static int32 GetXpRewardFromClassAndLevel(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 Level);
 };
