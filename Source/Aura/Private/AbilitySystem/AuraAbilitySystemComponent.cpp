@@ -1,9 +1,12 @@
 // Erades
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "AuraLogChannels.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
+#include "Interaction/PlayerInterface.h"
 
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -102,6 +105,30 @@ FGameplayTag UAuraAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbi
 		}
 	}
 	return (FGameplayTag());
+}
+
+void UAuraAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& AttributeTag)
+{
+	if (GetAvatarActor()->Implements<UPlayerInterface>())
+	{
+		if (IPlayerInterface::Execute_GetAttributePoints(GetAvatarActor()) > 0)
+		{
+			ServerUpgradeAttribute(AttributeTag);
+		}
+	}
+}
+
+void UAuraAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FGameplayTag& AttributeTag)
+{
+	FGameplayEventData PayLoad;
+	PayLoad.EventTag = AttributeTag;
+	PayLoad.EventMagnitude = 1;
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActor(), AttributeTag, PayLoad);
+
+	if (GetAvatarActor()->Implements<UPlayerInterface>())
+	{
+		IPlayerInterface::Execute_AddToAttributePoints(GetAvatarActor(), -1);
+	}
 }
 
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()

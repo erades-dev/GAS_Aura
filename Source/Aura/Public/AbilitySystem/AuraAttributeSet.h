@@ -80,6 +80,7 @@ public:
 	// Begin UAttributeSet Override.
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
 
 	TMap<FGameplayTag, FGameplayAttribute (*)()> TagsToAttributes;
 
@@ -244,5 +245,6 @@ private:
 	static void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props);
 	static void ShowFloatingText(const FEffectProperties& Props, const float Damage, const bool bBlockedHit, const bool bCriticalHit);
 	static void SendXpEvent(const FEffectProperties& Props);
+	bool bFillUpHealth = false;
+	bool bFillUpMana = false;
 };
-

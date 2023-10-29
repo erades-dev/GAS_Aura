@@ -34,8 +34,10 @@ public:
 
 	// Begin IPlayerInterface override.
 	virtual int32 GetXp_Implementation() override;
-	virtual int32 GetAttributePointsReward_Implementation(const int32 Level) const override;
-	virtual int32 GetSpellPointsReward_Implementation(const int32 Level) const override;
+	virtual int32 GetRewardAttributePoints_Implementation(const int32 Level) const override;
+	virtual int32 GetRewardSpellPoints_Implementation(const int32 Level) const override;
+	virtual int32 GetAttributePoints_Implementation() const override;
+	virtual int32 GetSpellPoints_Implementation() const override;
 	virtual void AddToPLayerLevel_Implementation(int32 InPlayerLevel) override;
 	virtual void AddXp_Implementation(int32 InXp) override;
 	virtual void AddToAttributePoints_Implementation(int32 InAttributePoints) override;

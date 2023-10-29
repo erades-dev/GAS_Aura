@@ -136,22 +136,37 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			const int32 CurrentXp = IPlayerInterface::Execute_GetXp(SourceCharacter);
 			const int32 NewLevel = IPlayerInterface::Execute_FindLevelForXp(SourceCharacter, CurrentXp + LocalIncomingXp);
 			const int32 LevelUps = NewLevel - CurrentLevel;
-			UE_LOG(LogAura, Log, TEXT("incoming experience: %f"), LocalIncomingXp);
-			UE_LOG(LogAura, Log, TEXT("levels up: %i"), LevelUps);
+			/*	UE_LOG(LogAura, Log, TEXT("incoming experience: %f"), LocalIncomingXp);
+				UE_LOG(LogAura, Log, TEXT("levels up: %i"), LevelUps);*/
 			if (LevelUps > 0)
 			{
 				IPlayerInterface::Execute_LevelUp(SourceCharacter);
-				const int32 AttributesPointsReward = IPlayerInterface::Execute_GetAttributePointsReward(SourceCharacter, CurrentLevel);
-				const int32 SpellPointsReward = IPlayerInterface::Execute_GetSpellPointsReward(SourceCharacter, CurrentLevel);
+				const int32 AttributesPointsReward = IPlayerInterface::Execute_GetRewardAttributePoints(SourceCharacter, CurrentLevel);
+				const int32 SpellPointsReward = IPlayerInterface::Execute_GetRewardSpellPoints(SourceCharacter, CurrentLevel);
 
 				IPlayerInterface::Execute_AddToPLayerLevel(SourceCharacter, LevelUps);
 				IPlayerInterface::Execute_AddToAttributePoints(SourceCharacter, AttributesPointsReward);
 				IPlayerInterface::Execute_AddToSpellPoints(SourceCharacter, SpellPointsReward);
-				SetHealth(GetMaxHealth());
-				SetMana(GetMaxMana());
+				bFillUpHealth = true;
+				bFillUpMana = true;
 			}
 			IPlayerInterface::Execute_AddXp(SourceCharacter, LocalIncomingXp);
 		}
+	}
+}
+
+void UAuraAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+	if (Attribute == GetMaxHealthAttribute() && bFillUpHealth)
+	{
+		SetHealth(GetMaxHealth());
+		bFillUpHealth = false;
+	}
+	if (Attribute == GetMaxManaAttribute() && bFillUpMana)
+	{
+		SetMana(GetMaxMana());
+		bFillUpMana = false;
 	}
 }
 

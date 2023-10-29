@@ -5,6 +5,15 @@
 #include "CoreMinimal.h"
 #include "AuraWidgetController.generated.h"
 
+class AAuraPlayerState;
+class AAuraPlayerController;
+class UAuraAbilitySystemComponent;
+class UAuraAttributeSet;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFloatChangedSignature, float, NewValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnIntChangedSignature, int32, NewValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FAuraAbilityInfo&, Info);
+
 class UAbilitySystemComponent;
 class UAttributeSet;
 
@@ -38,6 +47,9 @@ class AURA_API UAuraWidgetController : public UObject
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Messages")
+	FAbilityInfoSignature AbilityInfoDelegate;
+
 	UFUNCTION(BlueprintCallable)
 	void SetWidgetControllerParams(const FWidgetControllerParams& Params);
 
@@ -47,17 +59,34 @@ public:
 	virtual void BindCallbacksToDependencies();
 
 protected:
-	UPROPERTY(BlueprintReadOnly, Category = "GAS|WidgetController")
-	TObjectPtr<APlayerController> PlayerController;
+	AAuraPlayerState* GetAuraPS();
+	AAuraPlayerController* GetAuraPC();
+	UAuraAbilitySystemComponent* GetAuraASC();
+	UAuraAttributeSet* GetAuraAS();
 
 	UPROPERTY(BlueprintReadOnly, Category = "GAS|WidgetController")
 	TObjectPtr<APlayerState> PlayerState;
+
+	UPROPERTY(BlueprintReadOnly, Category = "GAS|WidgetController")
+	TObjectPtr<APlayerController> PlayerController;
 
 	UPROPERTY(BlueprintReadOnly, Category = "GAS|WidgetController")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY(BlueprintReadOnly, Category = "GAS|WidgetController")
 	TObjectPtr<UAttributeSet> AttributeSet;
+
+	UPROPERTY(BlueprintReadOnly, Category = "GAS|WidgetController")
+	TObjectPtr<AAuraPlayerState> AuraPlayerState;
+
+	UPROPERTY(BlueprintReadOnly, Category = "GAS|WidgetController")
+	TObjectPtr<AAuraPlayerController> AuraPlayerController;
+
+	UPROPERTY(BlueprintReadOnly, Category = "GAS|WidgetController")
+	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
+
+	UPROPERTY(BlueprintReadOnly, Category = "GAS|WidgetController")
+	TObjectPtr<UAuraAttributeSet> AuraAttributeSet;
 
 private:
 };

@@ -29,15 +29,29 @@ public:
 
 	UAttributeSet* GetAttributeSet() const { return (AttributeSet); }
 
+	FOnPlayerStatChanged OnLevelChangedDelegate;
+	FOnPlayerStatChanged OnXpChangedDelegate;
+	FOnPlayerStatChanged OnAttributePointsChangedDelegate;
+	FOnPlayerStatChanged OnSpellPointsChangedDelegate;
+
+	// TODO: Level redundant on State and PlayerCharacter
 	int32 GetLevel() const { return (Level); };
+	int32 GetXp() const { return (Xp); };
+	int32 GetAttributePoints() const { return (AttributePoints); };
+	int32 GetSpellPoints() const { return (SpellPoints); };
+
 	void AddToLevel(const int32 Amount);
 	void SetLevel(const int32 Value);
-	FOnPlayerStatChanged OnLevelChangedDelegate;
 
-	int32 GetXp() const { return (Xp); };
 	void AddToXp(const int32 Amount);
 	void SetXp(const int32 Value);
-	FOnPlayerStatChanged OnXpChangedDelegate;
+
+	void AddToAttributePoints(const int32 Value);
+	void SetAttributePoints(const int32 Value);
+
+	void AddToSpellPoints(const int32 Value);
+	void SetSpellPoints(const int32 Value);
+	// TODO: Encapsulate these Stats in a shared class.
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<ULevelUpInfo> LevelUpInfo;
@@ -56,9 +70,21 @@ private:
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Xp)
 	int32 Xp = 0;
 
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_AttributePoints)
+	int32 AttributePoints = 0;
+
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_SpellPoints)
+	int32 SpellPoints = 0;
+
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);
 
 	UFUNCTION()
 	void OnRep_Xp(int32 OldXp);
+
+	UFUNCTION()
+	void OnRep_AttributePoints(int32 OldXp);
+
+	UFUNCTION()
+	void OnRep_SpellPoints(int32 OldXp);
 };

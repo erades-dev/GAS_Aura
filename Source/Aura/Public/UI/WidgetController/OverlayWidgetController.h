@@ -32,9 +32,6 @@ struct FUIWidgetRow : public FTableRowBase
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, Row);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FAuraAbilityInfo&, Info);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFloatChangedSignature, float, NewValue);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnIntChangedSignature, int32, NewValue);
 
 /**
  *
@@ -53,9 +50,6 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Messages")
 	FMessageWidgetRowSignature MessageWidgetRowDelegate;
-
-	UPROPERTY(BlueprintAssignable, Category = "GAS|Messages")
-	FAbilityInfoSignature AbilityInfoDelegate;
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Attributes")
 	FOnFloatChangedSignature OnHealthChanged;
