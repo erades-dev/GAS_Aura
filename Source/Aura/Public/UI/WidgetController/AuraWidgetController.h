@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AuraWidgetController.generated.h"
 
+class UAbilityInfo;
 class AAuraPlayerState;
 class AAuraPlayerController;
 class UAuraAbilitySystemComponent;
@@ -58,11 +59,11 @@ public:
 
 	virtual void BindCallbacksToDependencies();
 
+	void BroadcastAbilityInfo();
+
 protected:
-	AAuraPlayerState* GetAuraPS();
-	AAuraPlayerController* GetAuraPC();
-	UAuraAbilitySystemComponent* GetAuraASC();
-	UAuraAttributeSet* GetAuraAS();
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Widget Data")
+	TObjectPtr<UAbilityInfo> AbilityInfo;
 
 	UPROPERTY(BlueprintReadOnly, Category = "GAS|WidgetController")
 	TObjectPtr<APlayerState> PlayerState;

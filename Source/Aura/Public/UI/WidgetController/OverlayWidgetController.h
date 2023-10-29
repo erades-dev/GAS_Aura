@@ -46,8 +46,6 @@ public:
 	virtual void BroadCastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;
 
-	void OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraAbilitySystemComponent) const;
-
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Messages")
 	FMessageWidgetRowSignature MessageWidgetRowDelegate;
 
@@ -77,9 +75,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "GAS|Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
-
-	UPROPERTY(EditDefaultsOnly, Category = "GAS|Widget Data")
-	TObjectPtr<UAbilityInfo> AbilityInfo;
 };
 
 template <typename T>

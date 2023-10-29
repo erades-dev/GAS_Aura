@@ -10,8 +10,6 @@
 
 void UOverlayWidgetController::BroadCastInitialValues()
 {
-	const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
-
 	OnHealthChanged.Broadcast(AuraAttributeSet->GetHealth());
 	OnMaxHealthChanged.Broadcast(AuraAttributeSet->GetMaxHealth());
 	OnManaChanged.Broadcast(AuraAttributeSet->GetMana());
@@ -20,37 +18,30 @@ void UOverlayWidgetController::BroadCastInitialValues()
 
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
-	AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
 	AuraPlayerState->OnXpChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnPlayerXpChanged);
 	AuraPlayerState->OnLevelChangedDelegate.AddLambda([this](const int32 NewLevel) {
 		OnPlayerLevelChanged.Broadcast(NewLevel);
 	});
 
-	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
-	if (AuraASC)
+	if (AuraAbilitySystemComponent->bStartupAbilitiesGiven)
 	{
-		if (AuraASC->bStartupAbilitiesGiven)
-		{
-			OnInitializeStartupAbilities(AuraASC);
-		}
-		else
-		{
-			AuraASC->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::OnInitializeStartupAbilities);
-		}
-		AuraASC->EffectAssetTagsDelegate.AddLambda([this](const FGameplayTagContainer& AssetTags) {
-			for (FGameplayTag Tag : AssetTags)
-			{
-				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
-				if (Tag.MatchesTag(MessageTag))
-				{
-					const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
-					MessageWidgetRowDelegate.Broadcast(*Row);
-				}
-			}
-		});
+		BroadcastAbilityInfo();
 	}
-
-	const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
+	else
+	{
+		AuraAbilitySystemComponent->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::BroadcastAbilityInfo);
+	}
+	AuraAbilitySystemComponent->EffectAssetTagsDelegate.AddLambda([this](const FGameplayTagContainer& AssetTags) {
+		for (FGameplayTag Tag : AssetTags)
+		{
+			FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+			if (Tag.MatchesTag(MessageTag))
+			{
+				const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+				MessageWidgetRowDelegate.Broadcast(*Row);
+			}
+		}
+	});
 
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetHealthAttribute())
 		.AddLambda([this](const FOnAttributeChangeData& Data) {
@@ -73,23 +64,8 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		});
 }
 
-void UOverlayWidgetController::OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraAbilitySystemComponent) const
-{
-	if (!AuraAbilitySystemComponent->bStartupAbilitiesGiven)
-		return;
-
-	FForEachAbility BroadcastDelegate;
-	BroadcastDelegate.BindLambda([this, AuraAbilitySystemComponent](const FGameplayAbilitySpec& AbilitySpec) {
-		FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoByTag(AuraAbilitySystemComponent->GetAbilityTagFromSpec(AbilitySpec));
-		Info.InputTag = AuraAbilitySystemComponent->GetInputTagFromSpec(AbilitySpec);
-		AbilityInfoDelegate.Broadcast(Info);
-	});
-	AuraAbilitySystemComponent->ForEachAbility(BroadcastDelegate);
-}
-
 void UOverlayWidgetController::OnPlayerXpChanged(const int32 NewXp) const
 {
-	const AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
 	const ULevelUpInfo* LevelUpInfo = AuraPlayerState->LevelUpInfo;
 	checkf(LevelUpInfo, TEXT("Unable to retieve LevelUpInfo. Please fill out in AuraPlayerState Blueprint"));
 
