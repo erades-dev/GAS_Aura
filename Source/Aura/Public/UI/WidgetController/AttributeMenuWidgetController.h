@@ -35,9 +35,6 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Attributes")
 	FOnIntChangedSignature AttributePointsChangedDelegate;
 
-	UPROPERTY(BlueprintAssignable, Category = "GAS|Attributes")
-	FOnIntChangedSignature SpellPointsChangedDelegate;
-
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "GAS|Attributes")
 	TObjectPtr<UAttributeInfo> AttributeInfoDataAsset;

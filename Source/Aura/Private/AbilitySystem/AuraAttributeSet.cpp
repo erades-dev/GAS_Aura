@@ -133,8 +133,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			const int32 CurrentXp = IPlayerInterface::Execute_GetXp(SourceCharacter);
 			const int32 NewLevel = IPlayerInterface::Execute_FindLevelForXp(SourceCharacter, CurrentXp + LocalIncomingXp);
 			const int32 LevelUps = NewLevel - CurrentLevel;
-			/*	UE_LOG(LogAura, Log, TEXT("incoming experience: %f"), LocalIncomingXp);
-				UE_LOG(LogAura, Log, TEXT("levels up: %i"), LevelUps);*/
+			//	UE_LOG(LogAura, Log, TEXT("incoming experience: %f"), LocalIncomingXp);
+			//	UE_LOG(LogAura, Log, TEXT("levels up: %i"), LevelUps);
 			if (LevelUps > 0)
 			{
 				IPlayerInterface::Execute_LevelUp(SourceCharacter);

@@ -18,5 +18,8 @@ public:
 	// Begin UAuraWidgetController override.
 	virtual void BroadCastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;
+
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Attributes")
+	FOnIntChangedSignature SpellPointsChangedDelegate;
 	
 };

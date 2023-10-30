@@ -4,6 +4,9 @@
 #include "GameplayTagsManager.h"
 
 
+
+
+
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Primary_Intelligence,				"Attributes.Primary.Intelligence",				"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Primary_Resilience,				"Attributes.Primary.Resilience",				"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Primary_Strength,					"Attributes.Primary.Strength",					"");
@@ -67,6 +70,7 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Type_Passive,						"Abilities.Type.
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Type_None,							"Abilities.Type.None",							"");
 
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Fire_FireBolt,						"Abilities.Fire.FireBolt",						"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Lightning_Electrocute,				"Abilities.Lightning.Electrocute", "");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Cooldown_Fire_FireBolt,						"Cooldown.Fire.FireBolt",						"");
 
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_CombatSocket_Weapon,							"CombatSocket.Weapon",							"");
