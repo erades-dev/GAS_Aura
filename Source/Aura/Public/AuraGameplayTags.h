@@ -4,11 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "NativeGameplayTags.h"
 
 /**
  * AuraGameplayTags
  * Singleton containing native Gameplay Tags.
  */
+
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Input_Passive_3);
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Abilities_Status_Equipped);
+
 struct FAuraGameplayTags
 {
 public:
@@ -55,8 +60,12 @@ public:
 	FGameplayTag Input_2;
 	FGameplayTag Input_3;
 	FGameplayTag Input_4;
+	FGameplayTag Input_Passive_1;
+	FGameplayTag Input_Passive_2;
+
 
 	FGameplayTag Effects_HitReact;
+
 	FGameplayTag Damage;
 	FGameplayTag Damage_Fire;
 	FGameplayTag Damage_Lightning;
@@ -65,8 +74,18 @@ public:
 	
 	FGameplayTag Abilities_Attack;
 	FGameplayTag Abilities_Summon;
-	FGameplayTag Abilities_Fire_FireBolt;
 
+	FGameplayTag Abilities_HitReact;
+	FGameplayTag Abilities_Status_Locked;
+	FGameplayTag Abilities_Status_Eligible;
+	FGameplayTag Abilities_Status_Unlocked;
+	FGameplayTag Abilities_Status_Equipped;
+
+	FGameplayTag Abilities_Type_Offensive;
+	FGameplayTag Abilities_Type_Passive;
+	FGameplayTag Abilities_Type_None;
+
+	FGameplayTag Abilities_Fire_FireBolt;
 	FGameplayTag Cooldown_Fire_FireBolt;
 
 	FGameplayTag CombatSocket_Weapon;

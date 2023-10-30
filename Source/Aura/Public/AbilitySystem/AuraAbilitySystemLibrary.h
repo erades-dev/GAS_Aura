@@ -3,14 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/CharacterClassInfo.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+
+#include "Data/CharacterClassInfo.h"
 #include "AuraAbilitySystemLibrary.generated.h"
 
-struct FGameplayEffectContextHandle;
+class AAuraHUD;
 class UAbilitySystemComponent;
-class UAttributeMenuWidgetController;
 class UOverlayWidgetController;
+class UAttributeMenuWidgetController;
+class USpellMenuWidgetController;
+struct FGameplayEffectContextHandle;
+struct FWidgetControllerParams;
 /**
  *
  */
@@ -20,11 +24,14 @@ class AURA_API UAuraAbilitySystemLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintPure, Category = "GAS|Widget Controller")
+	UFUNCTION(BlueprintPure, Category = "GAS|Widget Controller", meta = (DefaultToSelf = "WorldContextObject"))
 	static UOverlayWidgetController* GetOverlayWidgetController(const UObject* WorldContextObject);
 
-	UFUNCTION(BlueprintPure, Category = "GAS|Widget Controller")
+	UFUNCTION(BlueprintPure, Category = "GAS|Widget Controller", meta = (DefaultToSelf = "WorldContextObject"))
 	static UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintPure, Category = "GAS|Widget Controller", meta = (DefaultToSelf = "WorldContextObject"))
+	static USpellMenuWidgetController* GetSpellMenuWidgetController(const UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintCallable, Category = "GAS|Character Class Defaults")
 	static void InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass,
@@ -57,4 +64,7 @@ public:
 	static bool IsNotFriend(const AActor* ActorA, const AActor* ActorB);
 
 	static int32 GetXpRewardFromClassAndLevel(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 Level);
+
+private:
+	static AAuraHUD* MakeWidgetControllerParams(const UObject* WorldContextObject, FWidgetControllerParams& WidgetControllerParams);
 };
