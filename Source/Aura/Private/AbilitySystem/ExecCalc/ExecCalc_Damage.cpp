@@ -42,18 +42,18 @@ struct AuraDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ResistArcane, Source, false)
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ResistPhysical, Source, false)
 
-		TagToCaptureDef.Add(FAuraGameplayTags::Get().Attributes_Secondary_Armor, ArmorDef);
-		TagToCaptureDef.Add(FAuraGameplayTags::Get().Attributes_Secondary_BlockChance, BlockChanceDef);
-		TagToCaptureDef.Add(FAuraGameplayTags::Get().Attributes_Secondary_CriticalHitResistance, CriticalHitResistanceDef);
+		TagToCaptureDef.Add(TAG_Attributes_Secondary_Armor, ArmorDef);
+		TagToCaptureDef.Add(TAG_Attributes_Secondary_BlockChance, BlockChanceDef);
+		TagToCaptureDef.Add(TAG_Attributes_Secondary_CriticalHitResistance, CriticalHitResistanceDef);
 
-		TagToCaptureDef.Add(FAuraGameplayTags::Get().Attributes_Secondary_ArmorPenetration, ArmorPenetrationDef);
-		TagToCaptureDef.Add(FAuraGameplayTags::Get().Attributes_Secondary_CriticalHitChance, CriticalHitChanceDef);
-		TagToCaptureDef.Add(FAuraGameplayTags::Get().Attributes_Secondary_CriticalHitDamage, CriticalHitDamageDef);
+		TagToCaptureDef.Add(TAG_Attributes_Secondary_ArmorPenetration, ArmorPenetrationDef);
+		TagToCaptureDef.Add(TAG_Attributes_Secondary_CriticalHitChance, CriticalHitChanceDef);
+		TagToCaptureDef.Add(TAG_Attributes_Secondary_CriticalHitDamage, CriticalHitDamageDef);
 
-		TagToCaptureDef.Add(FAuraGameplayTags::Get().Attributes_Resistance_Fire, ResistFireDef);
-		TagToCaptureDef.Add(FAuraGameplayTags::Get().Attributes_Resistance_Lightning, ResistLightningDef);
-		TagToCaptureDef.Add(FAuraGameplayTags::Get().Attributes_Resistance_Arcane, ResistArcaneDef);
-		TagToCaptureDef.Add(FAuraGameplayTags::Get().Attributes_Resistance_Physical, ResistPhysicalDef);
+		TagToCaptureDef.Add(TAG_Attributes_Resistance_Fire, ResistFireDef);
+		TagToCaptureDef.Add(TAG_Attributes_Resistance_Lightning, ResistLightningDef);
+		TagToCaptureDef.Add(TAG_Attributes_Resistance_Arcane, ResistArcaneDef);
+		TagToCaptureDef.Add(TAG_Attributes_Resistance_Physical, ResistPhysicalDef);
 	}
 };
 

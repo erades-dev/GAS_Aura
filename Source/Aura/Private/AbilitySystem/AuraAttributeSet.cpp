@@ -8,7 +8,6 @@
 #include "GameFramework/Character.h"
 
 #include "AuraGameplayTags.h"
-#include "AuraLogChannels.h"
 #include "Interaction/CombatInterface.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Interaction/PlayerInterface.h"
@@ -16,30 +15,28 @@
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
-	const auto GamePlayTags = FAuraGameplayTags::Get();
+	TagsToAttributes.Add(TAG_Attributes_Primary_Strength, GetStrengthAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Primary_Intelligence, GetIntelligenceAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Primary_Resilience, GetResilienceAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Primary_Vigor, GetVigorAttribute);
 
-	TagsToAttributes.Add(GamePlayTags.Attributes_Primary_Strength, GetStrengthAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Primary_Intelligence, GetIntelligenceAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Primary_Resilience, GetResilienceAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Primary_Vigor, GetVigorAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Secondary_Armor, GetArmorAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Secondary_ArmorPenetration, GetIntelligenceAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Secondary_BlockChance, GetBlockChanceAttribute);
 
-	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_Armor, GetArmorAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_ArmorPenetration, GetIntelligenceAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_BlockChance, GetBlockChanceAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Secondary_CriticalHitChance, GetCriticalHitChanceAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Secondary_CriticalHitDamage, GetCriticalHitDamageAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Secondary_CriticalHitResistance, GetCriticalHitResistanceAttribute);
 
-	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_CriticalHitChance, GetCriticalHitChanceAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_CriticalHitDamage, GetCriticalHitDamageAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_CriticalHitResistance, GetCriticalHitResistanceAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Secondary_HealthRegeneration, GetHealthRegenerationAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Secondary_ManaRegeneration, GetManaRegenerationAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Secondary_MaxHealth, GetMaxHealthAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Secondary_MaxMana, GetMaxManaAttribute);
 
-	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_HealthRegeneration, GetHealthRegenerationAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_ManaRegeneration, GetManaRegenerationAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_MaxHealth, GetMaxHealthAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Secondary_MaxMana, GetMaxManaAttribute);
-
-	TagsToAttributes.Add(GamePlayTags.Attributes_Resistance_Fire, GetResistFireAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Resistance_Lightning, GetResistLightningAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Resistance_Arcane, GetResistArcaneAttribute);
-	TagsToAttributes.Add(GamePlayTags.Attributes_Resistance_Physical, GetResistPhysicalAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Resistance_Fire, GetResistFireAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Resistance_Lightning, GetResistLightningAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Resistance_Arcane, GetResistArcaneAttribute);
+	TagsToAttributes.Add(TAG_Attributes_Resistance_Physical, GetResistPhysicalAttribute);
 }
 
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -119,7 +116,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			else
 			{
 				FGameplayTagContainer TagContainer;
-				TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
+				TagContainer.AddTag(TAG_Effects_HitReact);
 				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 			}
 		}
@@ -232,7 +229,7 @@ void UAuraAttributeSet::SendXpEvent(const FEffectProperties& Props)
 		const int32 TargetLevel = ICombatInterface::Execute_GetCharacterLevel(Props.TargetCharacter);
 		const int32 XpReward = UAuraAbilitySystemLibrary::GetXpRewardFromClassAndLevel(Props.TargetCharacter, TargetClass, TargetLevel);
 
-		const FGameplayTag EventTag = FAuraGameplayTags::Get().Attributes_Meta_IncomingXp;
+		const FGameplayTag EventTag = TAG_Attributes_Meta_IncomingXp;
 		FGameplayEventData Payload;
 		Payload.EventTag = EventTag;
 		Payload.EventMagnitude = XpReward;

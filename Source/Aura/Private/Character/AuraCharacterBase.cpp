@@ -52,16 +52,15 @@ AActor* AAuraCharacterBase::GetAvatar_Implementation()
 
 FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag)
 {
-	const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
-	if (MontageTag.MatchesTagExact(GameplayTags.CombatSocket_Weapon) && IsValid(Weapon))
+	if (MontageTag.MatchesTagExact(TAG_CombatSocket_Weapon) && IsValid(Weapon))
 	{
 		return (Weapon->GetSocketLocation(WeaponTipSocketName));
 	}
-	if (MontageTag.MatchesTagExact(GameplayTags.CombatSocket_LeftHand))
+	if (MontageTag.MatchesTagExact(TAG_CombatSocket_LeftHand))
 	{
 		return (GetMesh()->GetSocketLocation(LeftHand));
 	}
-	if (MontageTag.MatchesTagExact(GameplayTags.CombatSocket_RightHand))
+	if (MontageTag.MatchesTagExact(TAG_CombatSocket_RightHand))
 	{
 		return (GetMesh()->GetSocketLocation(RightHand));
 	}

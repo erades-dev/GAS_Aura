@@ -24,7 +24,6 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(TArray<TSubclassOf<UGame
 			AbilitySpec.DynamicAbilityTags.AddTag(AuraAbility->StartupInputTag);
 			AbilitySpec.DynamicAbilityTags.AddTag(TAG_Abilities_Status_Equipped);
 
-			
 			GiveAbility(AbilitySpec);
 		}
 	}
@@ -112,10 +111,14 @@ FGameplayTag UAuraAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbi
 
 FGameplayTag UAuraAbilitySystemComponent::GetStatusFromSpec(const FGameplayAbilitySpec& AbilitySpec)
 {
+	// TODO: placeholder
 	for (FGameplayTag StatusTag : AbilitySpec.DynamicAbilityTags)
 	{
-		//if (StatusTag.MatchesTag(FGameplayTag))
+		if (StatusTag.MatchesTag(TAG_Abilities_Status))
+		{
+		}
 	}
+	return (FGameplayTag());
 }
 
 void UAuraAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& AttributeTag)
