@@ -11,7 +11,6 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Primary_Intelligence,				"Attribut
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Primary_Resilience,				"Attributes.Primary.Resilience",				"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Primary_Strength,					"Attributes.Primary.Strength",					"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Primary_Vigor,					"Attributes.Primary.Vigor",						"");
-
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Secondary_Armor,					"Attributes.Secondary.Armor",					"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Secondary_ArmorPenetration,		"Attributes.Secondary.ArmorPenetration",		"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Secondary_BlockChance,			"Attributes.Secondary.BlockChance",				"");
@@ -22,21 +21,56 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Secondary_HealthRegeneration,		"At
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Secondary_ManaRegeneration,		"Attributes.Secondary.ManaRegeneration",		"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Secondary_MaxHealth,				"Attributes.Secondary.MaxHealth",				"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Secondary_MaxMana,				"Attributes.Secondary.MaxMana",					"");
-
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Resistance_Fire,					"Attributes.Resistance.Fire",					"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Resistance_Lightning,				"Attributes.Resistance.Lightning",				"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Resistance_Arcane,				"Attributes.Resistance.Arcane",					"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Resistance_Physical,				"Attributes.Resistance.Physical",				"");
-
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Transient_Health,					"Attributes.Transient.Health",					"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Transient_Mana,					"Attributes.Transient.Mana",					"");
-
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Attributes_Meta_IncomingXp,					"Attributes.Meta.IncomingXp",					"");
 
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Message_HealthCrystal,						"Message.HealthCrystal",						"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Message_HealthPotion,						"Message.HealthPotion",							"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Message_ManaCrystal,							"Message.ManaCrystal",							"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Message_ManaPotion,							"Message.ManaPotion",							"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Damage,										"Damage",										"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Damage_Fire,									"Damage.Fire",									"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Damage_Lightning,							"Damage.Lightning",								"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Damage_Arcane,								"Damage.Arcane",								"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Damage_Physical,								"Damage.Physical",								"");
+
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Debuff_Burn,									"Debuff.Burn",									"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Debuff_Stun,									"Debuff.Stun",									"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Debuff_Arcane,								"Debuff.Arcane",								"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Debuff_Physical,								"Debuff.Physical",								"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Debuff_Stat_Chance,							"Debuff.Stat.Chance",							"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Debuff_Stat_Damage,							"Debuff.Stat.Damage",							"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Debuff_Stat_Frequency,						"Debuff.Stat.Frequency",						"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Debuff_Stat_Duration,						"Debuff.Stat.Duration",							"");
+
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Attack,							"Abilities.Attack",								"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Summon,							"Abilities.Summon",								"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_HitReact,							"Abilities.HitReact",							"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Status,							"Abilities.Status",								"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Status_Locked,						"Abilities.Status.Locked",						"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Status_Eligible,					"Abilities.Status.Eligible",					"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Status_Unlocked,					"Abilities.Status.Unlocked",					"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Status_Equipped,					"Abilities.Status.Equipped",					"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Type_Offensive,					"Abilities.Type.Offensive",						"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Type_Passive,						"Abilities.Type.Passive",						"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Type_None,							"Abilities.Type.None",							"");
+
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Fire_FireBolt,						"Abilities.Fire.FireBolt",						"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Lightning_Electrocute,				"Abilities.Lightning.Electrocute",				"");
+
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Cooldown_Fire_FireBolt,						"Cooldown.Fire.FireBolt",						"");
+
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_CombatSocket_Weapon,							"CombatSocket.Weapon",							"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_CombatSocket_RightHand,						"CombatSocket.RightHand",						"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_CombatSocket_LeftHand,						"CombatSocket.LeftHand",						"");
+
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Effects_HitReact,							"Effects.HitReact",								"");
+
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Montage_Attack_1,							"Montage.Attack.1",								"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Montage_Attack_2,							"Montage.Attack.2",								"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Montage_Attack_3,							"Montage.Attack.3",								"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Montage_Attack_4,							"Montage.Attack.4",								"");
 
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Input_Primary,								"Input.Primary",								"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Input_Secondary,								"Input.Secondary",								"");
@@ -47,40 +81,11 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Input_4,										"Input.4",										"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Input_Passive_1,								"Input.Passive.1",								"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Input_Passive_2,								"Input.Passive.2",								"");
 
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Effects_HitReact,							"Effects.HitReact",								"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Message_HealthCrystal,						"Message.HealthCrystal",						"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Message_HealthPotion,						"Message.HealthPotion",							"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Message_ManaCrystal,							"Message.ManaCrystal",							"");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Message_ManaPotion,							"Message.ManaPotion",							"");
 
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Damage,										"Damage",										"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Damage_Fire,									"Damage.Fire",									"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Damage_Lightning,							"Damage.Lightning",								"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Damage_Arcane,								"Damage.Arcane",								"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Damage_Physical,								"Damage.Physical",								"");
-
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Attack,							"Abilities.Attack",								"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Summon,							"Abilities.Summon",								"");
-
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_HitReact,							"Abilities.HitReact",							"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Status,							"Abilities.Status",								"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Status_Locked,						"Abilities.Status.Locked",						"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Status_Eligible,					"Abilities.Status.Eligible",					"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Status_Unlocked,					"Abilities.Status.Unlocked",					"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Status_Equipped,					"Abilities.Status.Equipped",					"");
-
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Type_Offensive,					"Abilities.Type.Offensive",						"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Type_Passive,						"Abilities.Type.Passive",						"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Type_None,							"Abilities.Type.None",							"");
-
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Fire_FireBolt,						"Abilities.Fire.FireBolt",						"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Abilities_Lightning_Electrocute,				"Abilities.Lightning.Electrocute", "");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Cooldown_Fire_FireBolt,						"Cooldown.Fire.FireBolt",						"");
-
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_CombatSocket_Weapon,							"CombatSocket.Weapon",							"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_CombatSocket_RightHand,						"CombatSocket.RightHand",						"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_CombatSocket_LeftHand,						"CombatSocket.LeftHand",						"");
-
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Montage_Attack_1,							"Montage.Attack.1",								"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Montage_Attack_2,							"Montage.Attack.2",								"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Montage_Attack_3,							"Montage.Attack.3",								"");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Montage_Attack_4,							"Montage.Attack.4",								"");
 
 FAuraGameplayTags FAuraGameplayTags::GameplayTags;
 
@@ -92,6 +97,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.DamageTypeToResistances.Add(TAG_Damage_Lightning, TAG_Attributes_Resistance_Lightning);
 	GameplayTags.DamageTypeToResistances.Add(TAG_Damage_Arcane, TAG_Attributes_Resistance_Arcane);
 	GameplayTags.DamageTypeToResistances.Add(TAG_Damage_Physical, TAG_Attributes_Resistance_Physical);
+
+	GameplayTags.DamageTypeToDebuffs.Add(TAG_Damage_Fire, TAG_Debuff_Burn);
+	GameplayTags.DamageTypeToDebuffs.Add(TAG_Damage_Lightning, TAG_Debuff_Stun);
+	GameplayTags.DamageTypeToDebuffs.Add(TAG_Damage_Arcane, TAG_Debuff_Arcane);
+	GameplayTags.DamageTypeToDebuffs.Add(TAG_Damage_Physical, TAG_Debuff_Physical);
 }
 
 
