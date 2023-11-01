@@ -31,18 +31,17 @@ bool UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	AAuraProjectile* ProjectileDeferred = GetWorld()->SpawnActorDeferred<AAuraProjectile>(ProjectileClass, SpawnTransform,
 		GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-	const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+	ProjectileDeferred->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
 
-	FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
-	EffectContextHandle.SetAbility(this);
-	EffectContextHandle.AddSourceObject(ProjectileDeferred);
-
-	const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
-
-	const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
-	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, DamageType, ScaledDamage);
-
-	ProjectileDeferred->DamageEffectSpecHandle = SpecHandle;
 	ProjectileDeferred->FinishSpawning(SpawnTransform);
 	return (false);
 }
+
+/*const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
+EffectContextHandle.SetAbility(this);
+EffectContextHandle.AddSourceObject(ProjectileDeferred);
+const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
+const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, DamageType, ScaledDamage);
+ProjectileDeferred->DamageEffectParams = SpecHandle;*/

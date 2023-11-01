@@ -1,8 +1,8 @@
 // Erades
 
 #include "AuraAssetManager.h"
-#include "AuraGameplayTags.h"
 #include "AbilitySystemGlobals.h"
+#include "AuraAbilityTypes.h"
 
 UAuraAssetManager& UAuraAssetManager::Get()
 {
@@ -14,9 +14,8 @@ UAuraAssetManager& UAuraAssetManager::Get()
 void UAuraAssetManager::StartInitialLoading()
 {
 	Super::StartInitialLoading();
-	FAuraGameplayTags::InitializeNativeGameplayTags();
+	FAuraDamagePairing::InitializePairingInfo();
 
 	// This is required to use Target Data.
 	UAbilitySystemGlobals::Get().InitGlobalData();
-
 }

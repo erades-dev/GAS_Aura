@@ -1,7 +1,7 @@
 // Erades
 
 #include "AuraGameplayTags.h"
-#include "GameplayTagsManager.h"
+
 
 
 
@@ -85,24 +85,6 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Message_HealthCrystal,						"Message.HealthCr
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Message_HealthPotion,						"Message.HealthPotion",							"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Message_ManaCrystal,							"Message.ManaCrystal",							"");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_Message_ManaPotion,							"Message.ManaPotion",							"");
-
-
-FAuraGameplayTags FAuraGameplayTags::GameplayTags;
-
-void FAuraGameplayTags::InitializeNativeGameplayTags()
-{
-	// TODO: Keep this class for tags.. Don't we have a GAS globals?
-	// Damage Type Array
-	GameplayTags.DamageTypeToResistances.Add(TAG_Damage_Fire, TAG_Attributes_Resistance_Fire);
-	GameplayTags.DamageTypeToResistances.Add(TAG_Damage_Lightning, TAG_Attributes_Resistance_Lightning);
-	GameplayTags.DamageTypeToResistances.Add(TAG_Damage_Arcane, TAG_Attributes_Resistance_Arcane);
-	GameplayTags.DamageTypeToResistances.Add(TAG_Damage_Physical, TAG_Attributes_Resistance_Physical);
-
-	GameplayTags.DamageTypeToDebuffs.Add(TAG_Damage_Fire, TAG_Debuff_Burn);
-	GameplayTags.DamageTypeToDebuffs.Add(TAG_Damage_Lightning, TAG_Debuff_Stun);
-	GameplayTags.DamageTypeToDebuffs.Add(TAG_Damage_Arcane, TAG_Debuff_Arcane);
-	GameplayTags.DamageTypeToDebuffs.Add(TAG_Damage_Physical, TAG_Debuff_Physical);
-}
 
 
 	//// Primary.

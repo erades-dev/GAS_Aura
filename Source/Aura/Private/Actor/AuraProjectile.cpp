@@ -35,11 +35,11 @@ AAuraProjectile::AAuraProjectile()
 
 void AAuraProjectile::Destroyed()
 {
-	Super::Destroyed();
 	if (!bHit && !HasAuthority())
 	{
 		PlayOnHitCosmetics();
 	}
+	Super::Destroyed();
 }
 
 void AAuraProjectile::BeginPlay()
@@ -55,13 +55,11 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// TODO: Looks like explosion is being spawn on the launcher and target. Duplicates.
-	if (!DamageEffectSpecHandle.Data.IsValid() ||
-		DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor ||
-		!UAuraAbilitySystemLibrary::IsNotFriend(OtherActor, DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser()))
+	const AActor* SourceAvatarActor = DamageEffectParams.SourceASC->GetAvatarActor();
+	if (SourceAvatarActor == OtherActor || !UAuraAbilitySystemLibrary::IsNotFriend(OtherActor, SourceAvatarActor))
 	{
 		return;
 	}
-
 	if (!bHit)
 	{
 		PlayOnHitCosmetics();
@@ -69,12 +67,12 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 
 	if (HasAuthority())
 	{
-		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
-		if (TargetASC)
-		{
-			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
-		}
+		DamageEffectParams.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
 		Destroy();
+		if (DamageEffectParams.TargetASC)
+		{
+			UAuraAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams);
+		}
 	}
 	else
 	{

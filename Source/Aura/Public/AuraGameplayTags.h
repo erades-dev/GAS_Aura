@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "NativeGameplayTags.h"
+
 
 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Attributes_Primary_Intelligence);
@@ -85,19 +85,3 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Message_HealthCrystal);
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Message_HealthPotion);
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Message_ManaCrystal);
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Message_ManaPotion);
-
-struct FAuraGameplayTags
-{
-public:
-	static const FAuraGameplayTags& Get()
-	{
-		return (GameplayTags);
-	}
-	static void InitializeNativeGameplayTags();
-
-	TMap<FGameplayTag, FGameplayTag> DamageTypeToResistances;
-	TMap<FGameplayTag, FGameplayTag> DamageTypeToDebuffs;
-
-private:
-	static FAuraGameplayTags GameplayTags;
-};

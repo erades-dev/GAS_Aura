@@ -90,73 +90,24 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	{
 		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
 	}
-
-	// IncomingDamageAttribute is a meta attribute, that only exist on the server.
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
-		const float LocalIncomingDamage = GetIncomingDamage();
-		SetIncomingDamage(0.0f);
-		if (LocalIncomingDamage > 0.f)
-		{
-			const float NewHealth = GetHealth() - LocalIncomingDamage;
-			const bool bIsBlocked = UAuraAbilitySystemLibrary::IsBlockHit(Props.EffectContextHandle);
-			const bool bIsCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
-			ShowFloatingText(Props, LocalIncomingDamage, bIsBlocked, bIsCriticalHit);
-			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
-			const bool bFatal = (NewHealth <= 0.f);
-			if (bFatal)
-			{
-				ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
-				if (CombatInterface)
-				{
-					CombatInterface->Die();
-				}
-				SendXpEvent(Props);
-			}
-			else
-			{
-				FGameplayTagContainer TagContainer;
-				TagContainer.AddTag(TAG_Effects_HitReact);
-				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
-			}
-		}
+		HandleIncomingDamage(Props);
 	}
-
 	if (Data.EvaluatedData.Attribute == GetIncomingXpAttribute())
 	{
-		const float LocalIncomingXp = GetIncomingXp();
-		SetIncomingXp(0.0f);
-		ACharacter* SourceCharacter = Props.SourceCharacter;
-		if (SourceCharacter->Implements<UPlayerInterface>() && SourceCharacter->Implements<UCombatInterface>())
-		{
-			const int32 CurrentLevel = ICombatInterface::Execute_GetCharacterLevel(SourceCharacter);
-			const int32 CurrentXp = IPlayerInterface::Execute_GetXp(SourceCharacter);
-			const int32 NewLevel = IPlayerInterface::Execute_FindLevelForXp(SourceCharacter, CurrentXp + LocalIncomingXp);
-			const int32 LevelUps = NewLevel - CurrentLevel;
-			//	UE_LOG(LogAura, Log, TEXT("incoming experience: %f"), LocalIncomingXp);
-			//	UE_LOG(LogAura, Log, TEXT("levels up: %i"), LevelUps);
-			if (LevelUps > 0)
-			{
-				IPlayerInterface::Execute_LevelUp(SourceCharacter);
-				const int32 AttributesPointsReward = IPlayerInterface::Execute_GetRewardAttributePoints(SourceCharacter, CurrentLevel);
-				const int32 SpellPointsReward = IPlayerInterface::Execute_GetRewardSpellPoints(SourceCharacter, CurrentLevel);
-
-				IPlayerInterface::Execute_AddToPLayerLevel(SourceCharacter, LevelUps);
-				IPlayerInterface::Execute_AddToAttributePoints(SourceCharacter, AttributesPointsReward);
-				IPlayerInterface::Execute_AddToSpellPoints(SourceCharacter, SpellPointsReward);
-				bFillUpHealth = true;
-				bFillUpMana = true;
-			}
-			IPlayerInterface::Execute_AddXp(SourceCharacter, LocalIncomingXp);
-		}
+		HandleIncomingXp(Props);
 	}
 }
 
-void UAuraAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+void UAuraAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, const float OldValue, const float NewValue)
 {
 	Super::PostAttributeChange(Attribute, OldValue, NewValue);
 	if (Attribute == GetMaxHealthAttribute() && bFillUpHealth)
 	{
+		// Todo:
+		// Keep constant the % of the pool before growing it. Eg. If I have 75_Health of 150_Max (50%) and
+		// MaxGrowsTo 200 I should have 100Health. Keeping the 50%
 		SetHealth(GetMaxHealth());
 		bFillUpHealth = false;
 	}
@@ -164,6 +115,70 @@ void UAuraAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute,
 	{
 		SetMana(GetMaxMana());
 		bFillUpMana = false;
+	}
+}
+
+void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
+{
+	const float LocalIncomingDamage = GetIncomingDamage();
+	SetIncomingDamage(0.0f);
+	if (LocalIncomingDamage > 0.f)
+	{
+		const float NewHealth = GetHealth() - LocalIncomingDamage;
+		SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
+		const bool bFatal = (NewHealth <= 0.f);
+		if (bFatal)
+		{
+			ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
+			if (CombatInterface)
+			{
+				CombatInterface->Die();
+			}
+			SendXpEvent(Props);
+		}
+		else
+		{
+			FGameplayTagContainer TagContainer;
+			TagContainer.AddTag(TAG_Effects_HitReact);
+			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+		}
+		if (UAuraAbilitySystemLibrary::IsSuccessfulDebuff(Props.EffectContextHandle))
+		{
+			// 	TODO: Handle debuff.
+			//FGameplayEffectContextHandle
+		}
+		const bool bIsBlocked = UAuraAbilitySystemLibrary::IsBlockHit(Props.EffectContextHandle);
+		const bool bIsCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
+		ShowFloatingText(Props, LocalIncomingDamage, bIsBlocked, bIsCriticalHit);
+	}
+}
+
+void UAuraAttributeSet::HandleIncomingXp(const FEffectProperties& Props)
+{
+	const float LocalIncomingXp = GetIncomingXp();
+	SetIncomingXp(0.0f);
+	ACharacter* SourceCharacter = Props.SourceCharacter;
+	if (SourceCharacter->Implements<UPlayerInterface>() && SourceCharacter->Implements<UCombatInterface>())
+	{
+		const int32 CurrentLevel = ICombatInterface::Execute_GetCharacterLevel(SourceCharacter);
+		const int32 CurrentXp = IPlayerInterface::Execute_GetXp(SourceCharacter);
+		const int32 NewLevel = IPlayerInterface::Execute_FindLevelForXp(SourceCharacter, CurrentXp + LocalIncomingXp);
+		const int32 LevelUps = NewLevel - CurrentLevel;
+		//	UE_LOG(LogAura, Log, TEXT("incoming experience: %f"), LocalIncomingXp);
+		//	UE_LOG(LogAura, Log, TEXT("levels up: %i"), LevelUps);
+		if (LevelUps > 0)
+		{
+			IPlayerInterface::Execute_LevelUp(SourceCharacter);
+			const int32 AttributesPointsReward = IPlayerInterface::Execute_GetRewardAttributePoints(SourceCharacter, CurrentLevel);
+			const int32 SpellPointsReward = IPlayerInterface::Execute_GetRewardSpellPoints(SourceCharacter, CurrentLevel);
+
+			IPlayerInterface::Execute_AddToPLayerLevel(SourceCharacter, LevelUps);
+			IPlayerInterface::Execute_AddToAttributePoints(SourceCharacter, AttributesPointsReward);
+			IPlayerInterface::Execute_AddToSpellPoints(SourceCharacter, SpellPointsReward);
+			bFillUpHealth = true;
+			bFillUpMana = true;
+		}
+		IPlayerInterface::Execute_AddXp(SourceCharacter, LocalIncomingXp);
 	}
 }
 
@@ -236,6 +251,7 @@ void UAuraAttributeSet::SendXpEvent(const FEffectProperties& Props)
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter, EventTag, Payload);
 	}
 }
+
 /*
  * ON REP functions moved below for clarity.
  */

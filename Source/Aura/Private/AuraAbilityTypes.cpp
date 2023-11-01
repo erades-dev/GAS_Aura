@@ -2,6 +2,8 @@
 
 #include "AuraAbilityTypes.h"
 
+#include "AuraGameplayTags.h"
+
 bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bool& bOutSuccess)
 {
 	uint32 RepBits = 0;
@@ -43,9 +45,29 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 		{
 			RepBits |= 1 << 8;
 		}
+		if (bIsSuccessfulDebuff)
+		{
+			RepBits |= 1 << 9;
+		}
+		if (DebuffDamage > 0.f)
+		{
+			RepBits |= 1 << 10;
+		}
+		if (DebuffDuration > 0.f)
+		{
+			RepBits |= 1 << 11;
+		}
+		if (DebuffFrequency > 0.f)
+		{
+			RepBits |= 1 << 12;
+		}
+		if (DamageType.IsValid())
+		{
+			RepBits |= 1 << 13;
+		}
 	}
 
-	Ar.SerializeBits(&RepBits, 9);
+	Ar.SerializeBits(&RepBits, 13);
 
 	if (RepBits & (1 << 0))
 	{
@@ -87,26 +109,41 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 	{
 		bHasWorldOrigin = false;
 	}
-
 	if (RepBits & (1 << 7))
 	{
-		Ar << WorldOrigin;
-		bIsBlockedHit = true;
+		Ar << bIsBlockedHit;
 	}
-	//else
-	//{
-	//	bIsBlockedHit = false;
-	//}
-
 	if (RepBits & (1 << 8))
 	{
 		Ar << bIsCriticalHit;
-		bIsCriticalHit = true;
 	}
-	//else
-	//{
-	//	bIsCriticalHit = false;
-	//}
+	if (RepBits & (1 << 9))
+	{
+		Ar << bIsSuccessfulDebuff;
+	}
+	if (RepBits & (1 << 10))
+	{
+		Ar << DebuffDamage;
+	}
+	if (RepBits & (1 << 11))
+	{
+		Ar << DebuffDuration;
+	}
+	if (RepBits & (1 << 12))
+	{
+		Ar << DebuffFrequency;
+	}
+	if (RepBits & (1 << 13))
+	{
+		if (Ar.IsLoading())
+		{
+			if (!DamageType.IsValid())
+			{
+				DamageType = TSharedPtr<FGameplayTag>(new FGameplayTag());
+			}
+		}
+		DamageType->NetSerialize(Ar, Map, bOutSuccess);
+	}
 
 	if (Ar.IsLoading())
 	{
@@ -115,4 +152,21 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 
 	bOutSuccess = true;
 	return true;
+}
+
+FAuraDamagePairing FAuraDamagePairing::DamagePairing;
+
+void FAuraDamagePairing::InitializePairingInfo()
+{
+	// TODO: Keep this class for tags.. Don't we have a GAS globals?
+	// Damage Type Array
+	DamagePairing.DamageTypeToResistances.Add(TAG_Damage_Fire, TAG_Attributes_Resistance_Fire);
+	DamagePairing.DamageTypeToResistances.Add(TAG_Damage_Lightning, TAG_Attributes_Resistance_Lightning);
+	DamagePairing.DamageTypeToResistances.Add(TAG_Damage_Arcane, TAG_Attributes_Resistance_Arcane);
+	DamagePairing.DamageTypeToResistances.Add(TAG_Damage_Physical, TAG_Attributes_Resistance_Physical);
+
+	DamagePairing.DamageTypeToDebuffs.Add(TAG_Damage_Fire, TAG_Debuff_Burn);
+	DamagePairing.DamageTypeToDebuffs.Add(TAG_Damage_Lightning, TAG_Debuff_Stun);
+	DamagePairing.DamageTypeToDebuffs.Add(TAG_Damage_Arcane, TAG_Debuff_Arcane);
+	DamagePairing.DamageTypeToDebuffs.Add(TAG_Damage_Physical, TAG_Debuff_Physical);
 }
