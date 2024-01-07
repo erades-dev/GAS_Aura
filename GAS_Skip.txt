@@ -1,0 +1,21 @@
+
+skips:
+
+125 health bar delay hide
+
+157 Hit Message
+
+204 Goblin spear- Sound norifies
+
+214,215,216,217,218
+Demons
+
+234 Fadeout actors
+
+263 LevelUp HUD message
+
+269 Attribute Menu Polish
+
+289 Spel Menu Buttons (enable/disable)
+290
+291
